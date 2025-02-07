@@ -1,0 +1,153 @@
+.contact-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #ccc;
+}
+
+.contact-container {
+    position: relative;
+    width: 90%;
+    max-width: 1400px;
+    height: 700px;
+    clip-path: polygon(10% 0%, 90% 0%, 100% 15%, 100% 85%, 90% 100%, 10% 100%, 0% 85%, 0% 15%);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background-color: #fff;
+}
+
+.contact-heading {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 5rem;
+    font-family: 'Times New Roman', Times, serif;
+    text-transform: uppercase;
+}
+
+.content-wrapper {
+    display: flex;
+    flex-direction: row;
+    /* Create two columns */
+    width: 100%;
+    gap: 30px;
+    /* Space between the two columns */
+}
+
+.message-section {
+    width: 48%;
+    /* 50% width for message section */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-right: 120px;
+}
+
+.message-section h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.textarea-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.textarea-container textarea {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #ccc;
+    font-size: 18px;
+    resize: none;
+    transition: border-color 0.3s ease;
+}
+
+.submit-btn {
+    padding: 16px;
+    background-color: #F59A23;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 18px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-btn:hover {
+    background-color:rgb(210, 134, 35);
+}
+
+.contact-icons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 50px;
+    width: 48%;
+    /* 50% width for the contact icons section */
+}
+
+.contact-icons div {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.contact-icons i {
+    font-size: 40px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.contact-icons span {
+    font-size: 18px;
+}
+
+@media (max-width: 768px) {
+    .contact-container {
+        flex-direction: column;
+        padding: 25px;
+        max-width: 100%;
+        height: auto;
+        padding: 40px;
+    }
+
+    .content-wrapper {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .message-section,
+    .contact-icons {
+        width: 100%;
+        align-items: center;
+    }
+
+    .contact-icons i {
+        font-size: 32px;
+    }
+
+    .contact-icons p {
+        font-size: 16px;
+    }
+
+    .contact-heading {
+        font-size: 28px;
+    }
+}

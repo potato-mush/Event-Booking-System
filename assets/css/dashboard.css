@@ -1,0 +1,104 @@
+ /* Background for the dashboard */
+ .dashboard {
+    position: relative;
+    background-image: url('../images/bg2.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    color: white;
+}
+
+.dashboard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Black color with 50% opacity */
+    z-index: 0;
+    /* Ensure the overlay is above the background but below the content */
+}
+
+.dashboard h1 {
+    position: relative;
+    /* Ensure the text appears above the overlay */
+    z-index: 2;
+    /* Keep the text above the black overlay */
+    text-align: left;
+    font-size: 36px;
+    margin: 0;
+    padding: 20px;
+}
+
+/* Randomly positioned image containers */
+.image-container {
+    position: absolute;
+    overflow: hidden;
+    width: 447px;
+    height: 441px;
+}
+
+.dashboard .image-container:nth-of-type(4) {
+    top: 12% !important;
+    left: 3% !important;
+    z-index: 4 !important;
+}
+
+.image-container:nth-child(2) {
+    bottom: 6%;
+    left: 18%;
+    z-index: 3;
+    width: 680px;
+    height: 455px;
+}
+
+.image-container:nth-child(3) {
+    top: 10%;
+    right: 16%;
+    z-index: 2;
+    width: 420px;
+    height: 350px;
+}
+
+.image-container:nth-child(4) {
+    bottom: 4%;
+    right: 5%;
+    z-index: 1;
+    width: 390px;
+    height: 345px;
+}
+
+/* Slideshow functionality */
+.slideshow {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.slideshow img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: transform .5s ease, opacity .5s ease;
+}
+
+/* To be applied dynamically */
+.show-left {
+    transform: translateX(-100%);
+    opacity: 1;
+}
+
+.show-top {
+    transform: translateY(-100%);
+    opacity: 1;
+}
+
+.show-right {
+    transform: translateX(100%);
+    opacity: 1;
+}

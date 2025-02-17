@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+    box-sizing: border-box;
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+  }
+  
+  .header .logo {
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .header .login-btn {
+    background-color: white;
+    color: #f59a23;
+    border: none;
+    padding: 8px 15px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  
+  .main {
+    display: flex;
+    height: calc(
+      100vh - 100px
+    ); /* Ensure the main area takes up the rest of the viewport height */
+  }
+  
+  .sidebar {
+    width: 300px;
+    background-color: #333;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Center items vertically */
+    align-items: flex-start; /* Align items to the left */
+    padding: 0; /* Remove extra padding */
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%; /* Make the buttons span the entire sidebar width */
+  }
+  
+  .sidebar ul li {
+    margin-bottom: 25px; /* Add vertical gaps between buttons */
+  }
+  
+  .sidebar ul li:last-child {
+    margin-bottom: 0; /* Remove gap after the last button */
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    display: block;
+    padding: 20px; /* Space inside the buttons */
+    background-color: #f59a23; /* Button color */
+    border-top-right-radius: 40px; /* Rounded top-right corner */
+    border-bottom-right-radius: 40px; /* Rounded bottom-right corner */
+    margin-right: 40px; /* Optional: Adds spacing between button and content */
+    font-size: 1.4rem;
+    text-align: center;
+  }
+  
+  .sidebar ul li a:hover {
+    background-color: #575757; /* Hover color for buttons */
+  }
+  
+  .content {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+  }
+  
+  .logout-btn {
+    position: absolute;
+    bottom: 40px;
+    background-color: #f44336; /* Red color */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    margin-top: auto;
+    text-decoration: none;
+  }
+  
+  .logout-btn:hover {
+    background-color: #d32f2f; /* Darker red on hover */
+  }
+  

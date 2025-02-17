@@ -1,0 +1,108 @@
+
+.customers-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.customers-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.customer-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.add-customer-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add-customer-btn:hover {
+    background: #0056b3;
+}
+
+.customers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.customers-table th, .customers-table td {
+    padding: 1rem;
+    text-align: center;
+}
+
+.customers-table th:nth-child(1), .customers-table td:nth-child(1) {
+    width: 5%;
+}
+
+.customers-table th {
+    background: #dfeeff;
+    font-weight: bold;
+}
+
+.customers-table tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+}
+
+.customers-table tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+.customers-table tbody tr:hover {
+    background: #e9ecef;
+}
+
+.edit-btn, .delete-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    margin: 0 0.25rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.edit-btn {
+    color: #ffc107;
+}
+
+.edit-btn:hover {
+    background-color: #fff3cd;
+}
+
+.delete-btn {
+    color: #dc3545;
+}
+
+.delete-btn:hover {
+    background-color: #f8d7da;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-inactive {
+    background: #c6c6c6;
+    color: #5a5a5a;
+}

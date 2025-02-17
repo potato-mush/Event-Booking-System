@@ -1,7 +1,30 @@
+.bookings-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.bookings-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #333;
+}
+
 .booking-filters {
     display: flex;
     gap: 1rem;
     margin-bottom: 2rem;
+}
+
+.search-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
 }
 
 .filter-select {
@@ -10,8 +33,36 @@
     border-radius: 4px;
 }
 
-.bookings-table tbody tr:hover {
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.bookings-table th, .bookings-table td {
+    padding: 1rem;
+    text-align: center;
+}
+
+.bookings-table th:nth-child(1), .bookings-table td:nth-child(1) {
+    width: 5%;
+}
+
+.bookings-table th {
+    background: #dfeeff;
+    font-weight: bold;
+}
+
+.bookings-table tbody tr:nth-child(odd) {
     background: #f8f9fa;
+}
+
+.bookings-table tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+.bookings-table tbody tr:hover {
+    background: #e9ecef;
 }
 
 .status-badge {
@@ -25,7 +76,17 @@
     color: #856404;
 }
 
+.status-PENDING {
+    background: #ffeeba;
+    color: #856404;
+}
+
 .status-confirmed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-CONFIRMED {
     background: #d4edda;
     color: #155724;
 }
@@ -33,4 +94,78 @@
 .status-cancelled {
     background: #f8d7da;
     color: #721c24;
+}
+
+.status-CANCELLED {
+    background: #f8d7da;
+    color: #721c24;
+}
+.confirm-btn, .cancel-btn, .pending-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    margin: 0 0.25rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-btn {
+    color: #28a745;
+}
+
+.confirm-btn:hover {
+    background-color: #e6f4ea;
+}
+
+.cancel-btn {
+    color: #dc3545;
+}
+
+.cancel-btn:hover {
+    background-color: #f8d7da;
+}
+
+.pending-btn {
+    color: #ffc107;
+}
+
+.pending-btn:hover {
+    background-color: #fff3cd;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.pagination button {
+    border: none;
+    background: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background: #0056b3;
+}
+
+.pagination button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.page-info {
+    margin: 0 1rem;
+    font-size: 1rem;
 }

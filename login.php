@@ -25,6 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Password is correct, start session and redirect
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
+
+            // Update last_login column
+            $update_sql = "UPDATE users SET last_login = NOW() WHERE id = :id";
+            $update_stmt = $conn->prepare($update_sql);
+            $update_stmt->bindParam(':id', $user['id'], PDO::PARAM_INT);
+            $update_stmt->execute();
+
             header('Location: index.php'); // Redirect to the dashboard or main page
             exit;
         } else {

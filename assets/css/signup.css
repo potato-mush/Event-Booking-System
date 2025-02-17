@@ -68,16 +68,26 @@
   display: block;
   margin-bottom: 8px;
   color: #333;
-  font-size: 24px;
+  font-size: 18px;
 }
 
 .registration-form input {
   width: 100%;
-  padding: 15px;
+  padding: 8px;
   margin-bottom: 20px;
   background-color: #fff;
   border: 1px solid #000;
-  font-size: 16px;
+  font-size: 14px;
+}
+
+/* Form row for first name and last name */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-group {
+  width: 48%;
 }
 
 /* Sign Up button */

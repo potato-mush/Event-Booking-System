@@ -19,6 +19,9 @@ $loggedIn = isset($_SESSION['username']);  // Assuming you store the username in
     <link rel="stylesheet" href="assets/css/bookings-styles.css">
     <link rel="stylesheet" href="assets/css/calendar-styles.css">
     <link rel="stylesheet" href="assets/css/customers-styles.css">
+    <link rel="stylesheet" href="assets/css/bookings-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>

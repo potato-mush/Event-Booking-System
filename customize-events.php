@@ -1,103 +1,196 @@
-<form class="customize-event-form">
+<?php
+
+// Check if the user is logged in
+if (!isset($_SESSION['user_username'])) {
+    header('Location: login.php');
+    exit();
+}
+
+require 'include/db_connection.php';
+
+function getOptions($category) {
+    global $conn;
+    $stmt = $conn->prepare("SELECT option_name, price FROM event_options WHERE category = ?");
+    $stmt->execute([$category]);
+    $options = [];
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        $options[] = ['name' => $row['option_name'], 'price' => $row['price']];
+    }
+    return $options;
+}
+
+$seatingOptions = getOptions('seating-arrangement');
+$menuOptions = getOptions('menu-type');
+$serviceOptions = getOptions('additional-services');
+$entertainmentOptions = getOptions('preferred-entertainment');
+$eventTypeOptions = getOptions('event-type');
+$decorationOptions = getOptions('decoration');
+?>
+
+<form class="customize-event-form" action="index.php?page=receipt" method="POST" onsubmit="return validateForm()">
     <!-- Event Name, Date, and Time grouped together -->
     <div class="form-group">
         <h3 for="event-name">Event Name/Title</h3>
-        <input type="text" id="event-name" name="event-name">
+        <input type="text" id="event-name" name="event-name" required>
 
         <h3 for="event-date">Event Date</h3>
-        <input type="date" id="event-date" name="event-date">
+        <input type="date" id="event-date" name="event-date" required>
 
         <h3>Event Time</h3>
         <div class="time-group">
             <label for="event-time-start">Start</label>
-            <input type="time" id="event-time-start" name="event-time-start">
+            <input type="time" id="event-time-start" name="event-time-start" required>
 
             <label for="event-time-end">End</label>
-            <input type="time" id="event-time-end" name="event-time-end">
+            <input type="time" id="event-time-end" name="event-time-end" required>
         </div>
     </div>
 
     <!-- Event Theme and Number of Guests grouped together -->
     <div class="form-group">
         <h3 for="event-theme">Event Theme</h3>
-        <input type="text" id="event-theme" name="event-theme">
+        <input type="text" id="event-theme" name="event-theme" required>
 
         <h3 for="number-of-guests">Number of Guests</h3>
-        <input type="number" id="number-of-guests" name="number-of-guests" min="1" max="1000">
+        <input type="number" id="number-of-guests" name="number-of-guests" min="1" max="100" required>
     </div>
 
     <!-- Seating Arrangement -->
     <div class="form-group">
         <h3>Seating Arrangement</h3>
-        <div class="checkbox-group">
-            <div><input type="checkbox" id="round-tables" name="seating-arrangement" value="round-tables"><label for="round-tables">Round Tables</label></div>
-            <div><input type="checkbox" id="banquet-style" name="seating-arrangement" value="banquet-style"><label for="banquet-style">Banquet Style</label></div>
-            <div><input type="checkbox" id="theatre-style" name="seating-arrangement" value="theatre-style"><label for="theatre-style">Theatre Style</label></div>
-            <div><input type="checkbox" id="custom-seating" name="seating-arrangement" value="custom"><label for="custom-seating">Custom</label><input type="text" name="custom-seating-text" placeholder="Specify Custom Arrangement"></div>
+        <div class="radio-group">
+            <?php foreach ($seatingOptions as $option): ?>
+                <div>
+                    <input type="radio" id="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" name="seating-arrangement" value="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" required>
+                    <label for="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>"><?= $option['name'] ?></label>
+                </div>
+            <?php endforeach; ?>
+            <div>
+                <input type="radio" id="custom-seating-arrangement" name="seating-arrangement" value="custom">
+                <label for="custom-seating-arrangement">Custom</label>
+                <input type="text" id="custom-seating-arrangement-input" name="custom-seating-arrangement" placeholder="Enter custom seating arrangement">
+            </div>
         </div>
     </div>
 
     <!-- Menu Type -->
     <div class="form-group">
         <h3>Menu Type</h3>
-        <div class="checkbox-group">
-            <div><input type="checkbox" id="buffet" name="menu-type" value="buffet"><label for="buffet">Buffet</label></div>
-            <div><input type="checkbox" id="plated-meals" name="menu-type" value="plated-meals"><label for="plated-meals">Plated Meals</label></div>
-            <div><input type="checkbox" id="cocktail" name="menu-type" value="cocktail"><label for="cocktail">Cocktail/Canapes</label></div>
+        <div class="radio-group">
+            <?php foreach ($menuOptions as $option): ?>
+                <div>
+                    <input type="radio" id="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" name="menu-type" value="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" required>
+                    <label for="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>"><?= $option['name'] ?></label>
+                </div>
+            <?php endforeach; ?>
+            <div>
+                <input type="radio" id="custom-menu-type" name="menu-type" value="custom">
+                <label for="custom-menu-type">Custom</label>
+                <input type="text" id="custom-menu-type-input" name="custom-menu-type" placeholder="Enter custom menu type">
+            </div>
         </div>
     </div>
 
     <!-- Additional Services -->
     <div class="form-group">
         <h3>Additional Services</h3>
-        <div class="checkbox-group">
-            <div><input type="checkbox" id="invitation-cards" name="additional-services" value="invitation-cards"><label for="invitation-cards">Invitation Cards</label></div>
-            <div><input type="checkbox" id="souvenirs" name="additional-services" value="souvenirs"><label for="souvenirs">Souvenirs</label></div>
-            <div><input type="checkbox" id="photography" name="additional-services" value="photography"><label for="photography">Event Photography/Videography</label></div>
-            <div><input type="checkbox" id="custom-services" name="additional-services" value="custom"><label for="custom-services">Custom</label><input type="text" name="custom-services-text" placeholder="Specify Custom Service"></div>
+        <div class="radio-group">
+            <?php foreach ($serviceOptions as $option): ?>
+                <div>
+                    <input type="radio" id="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" name="additional-services" value="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" required>
+                    <label for="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>"><?= $option['name'] ?></label>
+                </div>
+            <?php endforeach; ?>
+            <div>
+                <input type="radio" id="custom-additional-services" name="additional-services" value="custom">
+                <label for="custom-additional-services">Custom</label>
+                <input type="text" id="custom-additional-services-input" name="custom-additional-services" placeholder="Enter custom additional service">
+            </div>
         </div>
     </div>
 
     <!-- Preferred Entertainment -->
     <div class="form-group">
         <h3>Preferred Entertainment</h3>
-        <div class="checkbox-group">
-            <div><input type="checkbox" id="dj" name="preferred-entertainment" value="dj"><label for="dj">DJ</label></div>
-            <div><input type="checkbox" id="live-band" name="preferred-entertainment" value="live-band"><label for="live-band">Live Band</label></div>
-            <div><input type="checkbox" id="host" name="preferred-entertainment" value="host"><label for="host">Host/Emcee</label></div>
-            <div><input type="checkbox" id="audio-visual" name="preferred-entertainment" value="audio-visual"><label for="audio-visual">Audio-Visual Setup</label></div>
-            <div><input type="checkbox" id="dance-floor" name="preferred-entertainment" value="dance-floor"><label for="dance-floor">Dance Floor</label></div>
-            <div><input type="checkbox" id="photo-booth" name="preferred-entertainment" value="photo-booth"><label for="photo-booth">Photo Booth</label></div>
-            <div><input type="checkbox" id="other-entertainment" name="preferred-entertainment" value="other"><label for="other-entertainment">Other</label><input type="text" name="other-entertainment-text" placeholder="Specify Other Entertainment"></div>
+        <div class="radio-group">
+            <?php foreach ($entertainmentOptions as $option): ?>
+                <div>
+                    <input type="radio" id="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" name="preferred-entertainment" value="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" required>
+                    <label for="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>"><?= $option['name'] ?></label>
+                </div>
+            <?php endforeach; ?>
+            <div>
+                <input type="radio" id="custom-preferred-entertainment" name="preferred-entertainment" value="custom">
+                <label for="custom-preferred-entertainment">Custom</label>
+                <input type="text" id="custom-preferred-entertainment-input" name="custom-preferred-entertainment" placeholder="Enter custom preferred entertainment">
+            </div>
         </div>
     </div>
 
     <!-- Event Type -->
     <div class="form-group">
         <h3>Event Type</h3>
-        <div class="checkbox-group">
-            <div><input type="checkbox" id="debut" name="event-type" value="debut"><label for="debut">Debut Event</label></div>
-            <div><input type="checkbox" id="wedding" name="event-type" value="wedding"><label for="wedding">Wedding Event</label></div>
-            <div><input type="checkbox" id="corporate" name="event-type" value="corporate"><label for="corporate">Corporate Event</label></div>
-            <div><input type="checkbox" id="kids-party" name="event-type" value="kids-party"><label for="kids-party">Kid's Party Event</label></div>
-            <div><input type="checkbox" id="private-party" name="event-type" value="private-party"><label for="private-party">Private Party Event</label></div>
-            <div><input type="checkbox" id="other-event" name="event-type" value="other"><label for="other-event">Other</label><input type="text" name="other-event-text" placeholder="Specify Event Type"></div>
+        <div class="radio-group">
+            <?php foreach ($eventTypeOptions as $option): ?>
+                <div>
+                    <input type="radio" id="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" name="event-type" value="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" required>
+                    <label for="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>"><?= $option['name'] ?></label>
+                </div>
+            <?php endforeach; ?>
+            <div>
+                <input type="radio" id="custom-event-type" name="event-type" value="custom">
+                <label for="custom-event-type">Custom</label>
+                <input type="text" id="custom-event-type-input" name="custom-event-type" placeholder="Enter custom event type">
+            </div>
         </div>
     </div>
 
     <!-- Decoration -->
     <div class="form-group">
         <h3>Decoration</h3>
-        <div class="checkbox-group">
-            <div><input type="checkbox" id="balloons" name="decoration" value="balloons"><label for="balloons">Balloons</label></div>
-            <div><input type="checkbox" id="flowers" name="decoration" value="flowers"><label for="flowers">Flower Arrangement</label></div>
-            <div><input type="checkbox" id="led-lights" name="decoration" value="led-lights"><label for="led-lights">LED lights</label></div>
-            <div><input type="checkbox" id="backdrop" name="decoration" value="backdrop"><label for="backdrop">Backdrop/Photo Wall</label></div>
-            <div><input type="checkbox" id="centerpieces" name="decoration" value="centerpieces"><label for="centerpieces">Table Centerpieces</label></div>
-            <div><input type="checkbox" id="other-decoration" name="decoration" value="other"><label for="other-decoration">Other</label><input type="text" name="other-decoration-text" placeholder="Specify Other Decoration"></div>
+        <div class="radio-group">
+            <?php foreach ($decorationOptions as $option): ?>
+                <div>
+                    <input type="radio" id="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" name="decoration" value="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>" required>
+                    <label for="<?= strtolower(str_replace(' ', '-', $option['name'])) ?>"><?= $option['name'] ?></label>
+                </div>
+            <?php endforeach; ?>
+            <div>
+                <input type="radio" id="custom-decoration" name="decoration" value="custom">
+                <label for="custom-decoration">Custom</label>
+                <input type="text" id="custom-decoration-input" name="custom-decoration" placeholder="Enter custom decoration">
+            </div>
         </div>
     </div>
 
     <!-- Submit Button -->
-    <button type="submit">Pay</button>
+    <button type="submit">Confirm</button>
 </form>
+
+<script>
+function validateForm() {
+    const requiredFields = document.querySelectorAll('input[required]');
+    for (let field of requiredFields) {
+        if (!field.value) {
+            alert('Please complete all required fields.');
+            return false;
+        }
+    }
+
+    const startTime = document.getElementById('event-time-start').value;
+    const endTime = document.getElementById('event-time-end').value;
+
+    if (startTime && endTime) {
+        const start = new Date(`1970-01-01T${startTime}:00`);
+        const end = new Date(`1970-01-01T${endTime}:00`);
+        const diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+
+        if (diff > 3) {
+            alert('The event duration cannot exceed 3 hours.');
+            return false;
+        }
+    }
+
+    return true;
+}
+</script>

@@ -17,9 +17,9 @@
             <tr>
                 <th>Booking ID</th>
                 <th>Customer Name</th>
+                <th>Event Name</th>
                 <th>Event Date</th>
                 <th>Event Type</th>
-                <th>Event Name</th>
                 <th>Duration</th>
                 <th>Status</th>
                 <th>Actions</th>

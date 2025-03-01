@@ -1,0 +1,194 @@
+.reports-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.reports-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-size: 2rem;
+    color: #333;
+}
+
+.report-filters {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.report-filters select, .report-filters input {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.generate-report-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #007bff;
+    color: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.generate-report-btn:hover {
+    background: #0056b3;
+}
+
+.transaction-table-container {
+    margin-top: 2rem;
+}
+
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+.transactions-table th, .transactions-table td {
+    padding: 1rem;
+    text-align: center;
+}
+
+.transactions-table th:nth-child(1), .transactions-table td:nth-child(1) {
+    width: 5%;
+}
+
+.transactions-table th {
+    background: #dfeeff;
+    font-weight: bold;
+}
+
+.transactions-table tbody tr:nth-child(odd) {
+    background: #f8f9fa;
+}
+
+.transactions-table tbody tr:nth-child(even) {
+    background: #ffffff;
+}
+
+.transactions-table tbody tr:hover {
+    background: #e9ecef;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-PAID {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-unpaid {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.status-UNPAID {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.confirm-btn, .cancel-btn, .pending-btn {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    margin: 0 0.25rem;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-btn {
+    color: #28a745;
+}
+
+.confirm-btn:hover {
+    background-color: #e6f4ea;
+}
+
+.cancel-btn {
+    color: #dc3545;
+}
+
+.cancel-btn:hover {
+    background-color: #f8d7da;
+}
+
+.pending-btn {
+    color: #ffc107;
+}
+
+.pending-btn:hover {
+    background-color: #fff3cd;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1rem;
+}
+
+.pagination button {
+    border: none;
+    background: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background: #0056b3;
+}
+
+.pagination button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+}
+
+.page-info {
+    margin: 0 1rem;
+    font-size: 1rem;
+}
+
+.pagination .page-link {
+    border: 1px solid #ddd;
+    background: #007bff;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+}
+
+.pagination .page-link:hover {
+    background: #0056b3;
+}
+
+.pagination .page-link.active {
+    background: #0056b3;
+    pointer-events: none;
+}

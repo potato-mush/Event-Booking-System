@@ -1,50 +1,26 @@
 <?php
 session_start();
-include('include/db_connection.php'); // Make sure your database connection is correct
+include 'include/db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Prepare and execute query to fetch user data
-    $sql = "SELECT * FROM users WHERE username = :username";
-    $stmt = $conn->prepare($sql);
-
-    // Bind the username parameter using PDO
-    $stmt->bindParam(':username', $username, PDO::PARAM_STR);
-
-    // Execute the statement
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = :username");
+    $stmt->bindParam(':username', $username);
     $stmt->execute();
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Check if a user exists with the given username
-    if ($stmt->rowCount() > 0) {
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // Verify password
-        if (password_verify($password, $user['password'])) {
-            // Password is correct, start session and redirect
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-
-            // Update last_login column
-            $update_sql = "UPDATE users SET last_login = NOW() WHERE id = :id";
-            $update_stmt = $conn->prepare($update_sql);
-            $update_stmt->bindParam(':id', $user['id'], PDO::PARAM_INT);
-            $update_stmt->execute();
-
-            header('Location: index.php'); // Redirect to the dashboard or main page
-            exit;
-        } else {
-            // Invalid password
-            $error = "Invalid password.";
-        }
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['user_user_id'] = $user['id'];
+        $_SESSION['user_username'] = $user['username'];
+        header('Location: index.php');
+        exit();
     } else {
-        // No user found with that username
-        $error = "No user found with that username.";
+        $error = "Invalid username or password.";
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 

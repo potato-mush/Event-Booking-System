@@ -1,5 +1,4 @@
 <?php
-// db_connection.php
 $host = 'localhost'; // Database host
 $dbname = 'ebkrr'; // Database name
 $username = 'root'; // Database username

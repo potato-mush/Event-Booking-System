@@ -3,7 +3,13 @@ session_start();
 require_once 'includes/db_connection.php';
 
 // Check if the user is logged in
-$loggedIn = isset($_SESSION['username']);  // Assuming you store the username in session when logged in
+$loggedIn = isset($_SESSION['admin_username']);  // Assuming you store the username in session when logged in
+
+// Redirect to login page if not logged in
+if (!$loggedIn) {
+    header('Location: login.php');
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -19,7 +25,7 @@ $loggedIn = isset($_SESSION['username']);  // Assuming you store the username in
     <link rel="stylesheet" href="assets/css/bookings-styles.css">
     <link rel="stylesheet" href="assets/css/calendar-styles.css">
     <link rel="stylesheet" href="assets/css/customers-styles.css">
-    <link rel="stylesheet" href="assets/css/bookings-styles.css">
+    <link rel="stylesheet" href="assets/css/reports-styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -31,7 +37,7 @@ $loggedIn = isset($_SESSION['username']);  // Assuming you store the username in
 
         <!-- Show login button if not logged in or welcome message if logged in -->
         <?php if ($loggedIn): ?>
-            <p class="username">Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?></p>
+            <p class="username">Welcome back, <?php echo htmlspecialchars($_SESSION['admin_username']); ?></p>
         <?php else: ?>
             <button class="login-btn" onclick="window.location.href='login.php';">Login</button>
         <?php endif; ?>

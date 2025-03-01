@@ -21,7 +21,7 @@
   box-sizing: border-box; /* Make sure padding doesn't affect the width */
 }
 
-.customize-event-form .checkbox-group div {
+.customize-event-form .radio-group div {
   display: flex;
   align-items: center;
   margin-bottom: 10px;
@@ -72,12 +72,12 @@
   box-sizing: border-box; /* Ensure input fields do not exceed their container */
 }
 
-/* Checkbox Group Styling */
-.customize-event-form .checkbox-group input[type="checkbox"] {
+/* radio Group Styling */
+.customize-event-form .radio-group input[type="radio"] {
   margin-right: 10px;
 }
 
-.customize-event-form .checkbox-group input[type="text"] {
+.customize-event-form .radio-group input[type="text"] {
   margin-left: 10px;
   width: 200px;
 }
@@ -111,7 +111,7 @@
     flex: 1 1 100%; /* Stack form groups into a single column on smaller screens */
   }
 
-  .customize-event-form .checkbox-group {
+  .customize-event-form .radio-group {
     flex-direction: column;
   }
 

@@ -23,9 +23,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Verify password
         if (password_verify($password, $user['password'])) {
             // Password is correct, start session and redirect
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $user['username'];
-            $_SESSION['role'] = $user['role'];
+            $_SESSION['admin_user_id'] = $user['id'];
+            $_SESSION['admin_username'] = $user['username'];
+            $_SESSION['admin_role'] = $user['role'];
             header('Location: index.php'); // Redirect to the dashboard or main page
             exit;
         } else {
@@ -107,7 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <button type="submit" class="login-btn">Login</button>
-                <p class="signup-link">Don't have an account? <a href="signup.php">Sign up here</a></p>
             </form>
         </div>
     </div>

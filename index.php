@@ -2,7 +2,7 @@
 session_start(); // Start the session to access session data
 
 // Check if the user is logged in
-$loggedIn = isset($_SESSION['username']);  // Assuming you store the username in session when logged in
+$loggedIn = isset($_SESSION['user_username']);  // Assuming you store the username in session when logged in
 ?>
 
 <!DOCTYPE html>
@@ -17,6 +17,7 @@ $loggedIn = isset($_SESSION['username']);  // Assuming you store the username in
     <link rel="stylesheet" href="assets/css/catering-packages.css">
     <link rel="stylesheet" href="assets/css/customize-event.css">
     <link rel="stylesheet" href="assets/css/contact-us.css">
+    <link rel="stylesheet" href="assets/css/receipt-styles.css">
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
@@ -29,7 +30,7 @@ $loggedIn = isset($_SESSION['username']);  // Assuming you store the username in
 
         <!-- Show login button if not logged in or welcome message if logged in -->
         <?php if ($loggedIn): ?>
-            <p class="username">Welcome back, <?php echo htmlspecialchars($_SESSION['username']); ?></p>
+            <p class="username">Welcome back, <?php echo htmlspecialchars($_SESSION['user_username']); ?></p>
         <?php else: ?>
             <button class="login-btn" onclick="window.location.href='login.php';">Login</button>
         <?php endif; ?>
@@ -53,8 +54,12 @@ $loggedIn = isset($_SESSION['username']);  // Assuming you store the username in
             <?php
             // index.php
             $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
-            $allowedPages = ['dashboard', 'catering-packages', 'customize-events', 'contact-us', 'package-detail'];
+            $allowedPages = ['dashboard', 'catering-packages', 'customize-events', 'contact-us', 'package-detail', 'receipt'];
             if (in_array($page, $allowedPages)) {
+                if ($page === 'receipt' && !$loggedIn) {
+                    header('Location: login.php');
+                    exit();
+                }
                 include $page . '.php';
             } else {
                 echo "<p>Page not found.</p>";

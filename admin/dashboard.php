@@ -15,6 +15,11 @@ $totalCustomers = $totalCustomersResult->fetch(PDO::FETCH_ASSOC)['totalCustomers
 $pendingBookingsQuery = "SELECT COUNT(*) as pendingBookings FROM booking WHERE status = 'pending'";
 $pendingBookingsResult = $conn->query($pendingBookingsQuery);
 $pendingBookings = $pendingBookingsResult->fetch(PDO::FETCH_ASSOC)['pendingBookings'];
+
+// Fetch total paid amount
+$totalPaidQuery = "SELECT SUM(total_amount) as totalPaid FROM transactions WHERE status = 'PAID'";
+$totalPaidResult = $conn->query($totalPaidQuery);
+$totalPaid = $totalPaidResult->fetch(PDO::FETCH_ASSOC)['totalPaid'];
 ?>
 
 <div class="dashboard-container">
@@ -41,15 +46,26 @@ $pendingBookings = $pendingBookingsResult->fetch(PDO::FETCH_ASSOC)['pendingBooki
         
         <div class="stat-card">
             <i class="fas fa-money-bill-wave"></i>
-            <h3>Monthly Revenue</h3>
-            <p class="number">₱150,000</p>
+            <h3>Total Paid Amount</h3>
+            <p class="number">₱<?php echo number_format($totalPaid, 2); ?></p>
         </div>
     </div>
-
-    <div class="recent-activity">
-        <h2>Recent Activity</h2>
-        <div class="activity-list">
-            <!-- Add your recent activity items here -->
+    
+    <div class="chart-container">
+        <canvas id="revenueChart"></canvas>
+    </div>
+    <div class="chart-row">
+        <div class="chart-container">
+            <canvas id="monthlyBookingsChart"></canvas>
         </div>
+        <div class="chart-container">
+            <canvas id="bookingsStatusChart"></canvas>
+        </div>
+    </div>
+    <div class="chart-container">
+        <canvas id="customersChart"></canvas>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="assets/js/dashboard-charts.js"></script>

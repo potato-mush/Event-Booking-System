@@ -6,7 +6,7 @@ $data = json_decode(file_get_contents('php://input'), true);
 $transactionId = $data['transactionId'];
 
 try {
-    $sql = "SELECT t.transaction_number, b.event_name, u.first_name, u.last_name, t.transaction_date, t.total_amount, t.status 
+    $sql = "SELECT t.transaction_number, b.event_name, b.guest_no, b.event_date, b.event_time_start, b.event_time_end, u.first_name, u.last_name, u.email, t.transaction_date, t.total_amount, t.status 
             FROM transactions t
             JOIN booking b ON t.booking_id = b.id
             JOIN users u ON t.user_id = u.id

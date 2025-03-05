@@ -36,3 +36,32 @@
 .activity-list {
     margin-top: 1rem;
 }
+
+.chart-container {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-top: 2rem;
+    width: 95%; /* Ensure the container takes full width */
+}
+
+.chart-container canvas {
+    width: 100% !important; /* Ensure the canvas takes full width */
+    height: auto !important; /* Maintain aspect ratio */
+}
+
+.chart-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.chart-row .chart-container {
+    flex: 3; /* Allocate more space to the line graph container */
+}
+
+.chart-row .chart-container:last-child {
+    flex: 1; /* Allocate less space to the pie graph container */
+}

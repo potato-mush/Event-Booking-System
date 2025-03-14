@@ -92,14 +92,14 @@
     color: #155724;
 }
 
-.status-unpaid {
-    background: #f8d7da;
-    color: #721c24;
+.status-partially {
+    background: #fff3cd;
+    color: #d8a303;
 }
 
-.status-UNPAID {
-    background: #f8d7da;
-    color: #721c24;
+.status-PARTIALLY {
+    background: #fff3cd;
+    color: #d8a303;
 }
 
 .confirm-btn, .cancel-btn, .pending-btn {
@@ -125,11 +125,11 @@
 }
 
 .cancel-btn {
-    color: #dc3545;
+    color: #ffc107;
 }
 
 .cancel-btn:hover {
-    background-color: #f8d7da;
+    background-color: #fff3cd;
 }
 
 .pending-btn {

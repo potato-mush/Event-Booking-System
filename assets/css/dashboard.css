@@ -9,19 +9,6 @@
     color: white;
 }
 
-.dashboard::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    /* Black color with 50% opacity */
-    z-index: 0;
-    /* Ensure the overlay is above the background but below the content */
-}
-
 .dashboard h1 {
     position: relative;
     /* Ensure the text appears above the overlay */
@@ -31,6 +18,7 @@
     font-size: 36px;
     margin: 0;
     padding: 20px;
+    color: #f48430;
 }
 
 /* Randomly positioned image containers */

@@ -31,7 +31,11 @@ function formatTime($time) {
 }
 
 $totalPrice = 0;
-$eventName = $eventDate = $eventTimeStart = $eventTimeEnd = $eventTheme = $numberOfGuests = $seatingArrangement = $menuType = $additionalServices = $preferredEntertainment = $eventType = $decoration = '';
+$eventName = $eventDate = $eventTimeStart = $eventTimeEnd = $eventTheme = $numberOfGuests = 
+$seatingArrangement = $menuType = $additionalServices = $preferredEntertainment = 
+$eventType = $decoration = $menuTitle = '';  // Added $menuTitle
+$totalMenuPrice = 0;  // Added $totalMenuPrice initialization
+$referenceNumber = '';  // Add this line
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
     $eventName = $_POST['event-name'];
@@ -46,6 +50,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
     $preferredEntertainment = $_POST['preferred-entertainment'] === 'custom' ? $_POST['custom-preferred-entertainment'] : $_POST['preferred-entertainment'];
     $eventType = $_POST['event-type'] === 'custom' ? $_POST['custom-event-type'] : $_POST['event-type'];
     $decoration = $_POST['decoration'] === 'custom' ? $_POST['custom-decoration'] : $_POST['decoration'];
+    $menuTitle = isset($_POST['menu-title']) ? $_POST['menu-title'] : '';
+    $menuPrice = isset($_POST['full-course-menu']) ? floatval($_POST['full-course-menu']) : 0;
+    $numberOfGuests = intval($_POST['number-of-guests']);
+    $referenceNumber = $_POST['reference-number'];
+
+    // Calculate total menu price based on number of guests
+    $totalMenuPrice = $menuPrice * $numberOfGuests;
 
     // Fetch prices from the database
     function getPrice($option)
@@ -59,18 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
     }
 
     $seatingPrice = getPrice($seatingArrangement);
-    $menuPrice = getPrice($menuType);
+    $menuTypePrice = getPrice($menuType);  // Changed from menuPrice
     $servicesPrice = getPrice($additionalServices);
     $entertainmentPrice = getPrice($preferredEntertainment);
     $eventTypePrice = getPrice($eventType);
     $decorationPrice = getPrice($decoration);
 
     $totalPrice += $seatingPrice;
-    $totalPrice += $menuPrice;
+    $totalPrice += $menuTypePrice;  // Changed from menuPrice
     $totalPrice += $servicesPrice;
     $totalPrice += $entertainmentPrice;
     $totalPrice += $eventTypePrice;
     $totalPrice += $decorationPrice;
+    $totalPrice += $totalMenuPrice;
 
     // Save booking and transaction details to the database
     if (isset($_POST['confirm'])) {
@@ -86,6 +98,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
         exit();
     }
 }
+
+// After database connection and before displaying receipt
+if (isset($_SESSION['temp_booking_id'])) {
+    $bookingId = $_SESSION['temp_booking_id'];
+    
+    // Fetch booking details
+    $stmt = $conn->prepare("SELECT b.*, t.transaction_number, t.total_amount, t.reference_number 
+                           FROM booking b 
+                           JOIN transactions t ON b.id = t.booking_id 
+                           WHERE b.id = ?");
+    $stmt->execute([$bookingId]);
+    $booking = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($booking) {
+        $eventName = $booking['event_name'];
+        $eventDate = $booking['event_date'];
+        $eventTimeStart = $booking['event_time_start'];
+        $eventTimeEnd = $booking['event_time_end'];
+        $eventTheme = $booking['event_theme'];
+        $numberOfGuests = $booking['guest_no'];
+        $seatingArrangement = $booking['seating_arrangement'];
+        $menuType = $booking['menu_type'];
+        $additionalServices = $booking['additional_services'];
+        $preferredEntertainment = $booking['preferred_entertainment'];
+        $eventType = $booking['event_type'];
+        $decoration = $booking['decoration_preferences'];
+        $menuTitle = $booking['menu_title'];
+        $totalMenuPrice = $booking['menu_price'];
+        $totalPrice = $booking['total_amount'];
+        $referenceNumber = $booking['reference_number'];
+        $transactionNumber = $booking['transaction_number'];
+    }
+}
 ?>
 
 <div class="receipt">
@@ -97,11 +142,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
     <p><strong>Event Theme:</strong> <?= htmlspecialchars($eventTheme) ?></p>
     <p><strong>Number of Guests:</strong> <?= htmlspecialchars($numberOfGuests) ?></p>
     <p><strong>Seating Arrangement:</strong> <?= htmlspecialchars(normalizeOptionName($seatingArrangement)) ?></p>
-    <p><strong>Menu Type:</strong> <?= htmlspecialchars(normalizeOptionName($menuType)) ?></p>
+    <p><strong>Menu Type:</strong> <?= htmlspecialchars(normalizeOptionName($menuType)) ?><?= $menuTitle ? ' (' . htmlspecialchars($menuTitle) . ')' : '' ?></p>
+    <?php if ($totalMenuPrice > 0): ?>
+    <p><strong>Total Menu Price:</strong> ₱<?= number_format($totalMenuPrice, 2) ?></p>
+    <?php endif; ?>
     <p><strong>Additional Services:</strong> <?= htmlspecialchars(normalizeOptionName($additionalServices)) ?></p>
     <p><strong>Preferred Entertainment:</strong> <?= htmlspecialchars(normalizeOptionName($preferredEntertainment)) ?></p>
     <p><strong>Event Type:</strong> <?= htmlspecialchars(normalizeOptionName($eventType)) ?></p>
     <p><strong>Decoration:</strong> <?= htmlspecialchars(normalizeOptionName($decoration)) ?></p>
+    <p><strong>Reference Number:</strong> <?= htmlspecialchars($referenceNumber) ?></p>
+    <p><strong>Payment Status:</strong> 50% Down Payment</p>
     <div class="user-info">
         <h3>User Information</h3>
         <p><strong>Name:</strong> <?= htmlspecialchars($userInfo['first_name'] . ' ' . $userInfo['last_name']) ?></p>
@@ -112,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
     </div>
     <p><strong>Transaction Number:</strong> <?= htmlspecialchars($transactionNumber) ?></p>
     <p><strong>Date:</strong> <?= htmlspecialchars($currentDate) ?></p>
-    <form method="POST" action="include/confirm_booking.php">
+    <form method="POST">
         <input type="hidden" name="event-name" value="<?= htmlspecialchars($eventName) ?>">
         <input type="hidden" name="event-date" value="<?= htmlspecialchars($eventDate) ?>">
         <input type="hidden" name="event-time-start" value="<?= htmlspecialchars($eventTimeStart) ?>">
@@ -125,14 +175,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['event-name'])) {
         <input type="hidden" name="preferred-entertainment" value="<?= htmlspecialchars($preferredEntertainment) ?>">
         <input type="hidden" name="event-type" value="<?= htmlspecialchars($eventType) ?>">
         <input type="hidden" name="decoration" value="<?= htmlspecialchars($decoration) ?>">
-        <button type="submit" name="confirm">Confirm</button>
+        <input type="hidden" name="full-course-menu" value="<?= htmlspecialchars($menuPrice) ?>">
+        <input type="hidden" name="menu-title" value="<?= htmlspecialchars($menuTitle) ?>">
+        <input type="hidden" name="booking_id" value="<?= $_SESSION['temp_booking_id'] ?? '' ?>">
+        <button type="submit" name="confirm_booking">Confirm</button>
     </form>
 </div>
 
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_booking'])) {
+    $bookingId = $_POST['booking_id'];
+    
+    // Update booking and transaction status
+    $stmt = $conn->prepare("UPDATE booking SET status = 'CONFIRMED' WHERE id = ?");
+    $stmt->execute([$bookingId]);
+    
+    $stmt = $conn->prepare("UPDATE transactions SET status = 'PARTIALLY PAID' WHERE booking_id = ?");
+    $stmt->execute([$bookingId]);
+    
+    // Set success flag and clear temp booking ID
+    $_SESSION['booking_success'] = true;
+    unset($_SESSION['temp_booking_id']);
+    
+    echo "<script>
+        document.getElementById('success-modal').style.display = 'block';
+        document.getElementById('success-modal').addEventListener('click', function() {
+            window.location.href = 'index.php';
+        });
+    </script>";
+}
+?>
+
 <!-- Success Modal -->
-<div id="success-modal" class="modal">
+<div id="success-modal" class="modal" style="display: none;">
     <div class="modal-content">
-        <span class="close" onclick="document.getElementById('success-modal').style.display='none'">&times;</span>
         <h2>Success!</h2>
         <p>Your booking has been confirmed.</p>
         <button onclick="window.location.href='index.php'">OK</button>

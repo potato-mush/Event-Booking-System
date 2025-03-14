@@ -78,6 +78,10 @@ body {
   background-color: #575757; /* Hover color for buttons */
 }
 
+.sidebar ul li a.active {
+  padding: 40px 20px; /* Increase the padding size when active */
+}
+
 .content {
   flex: 1;
   padding: 0;

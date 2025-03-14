@@ -105,10 +105,10 @@ $totalPages = ceil($totalTransactions / $limit);
                             <td>₱<?php echo number_format($transaction['total_amount'], 2); ?></td>
                             <td><span class="status-badge status-<?php echo strtolower($transaction['status']); ?>"><?php echo $transaction['status']; ?></span></td>
                             <td>
-                                <?php if ($transaction['status'] == 'UNPAID'): ?>
+                                <?php if ($transaction['status'] == 'PARTIALLY PAID'): ?>
                                     <button class="confirm-btn" data-id="<?php echo $transaction['id']; ?>"><i class="fas fa-check-circle"></i></button>
                                 <?php else: ?>
-                                    <button class="cancel-btn" data-id="<?php echo $transaction['id']; ?>"><i class="fas fa-times-circle"></i></button>
+                                    <button class="cancel-btn" data-id="<?php echo $transaction['id']; ?>"><i class="fas fa-minus-circle"></i></button>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -229,9 +229,9 @@ $totalPages = ceil($totalTransactions / $limit);
                     <td>₱${number_format(transaction.total_amount, 2)}</td>
                     <td><span class="status-badge status-${transaction.status.toLowerCase()}">${transaction.status}</span></td>
                     <td>
-                        ${transaction.status === 'UNPAID' ? 
+                        ${transaction.status === 'PARTIALLY PAID' ? 
                             `<button class="confirm-btn" data-id="${transaction.id}"><i class="fas fa-check-circle"></i></button>` : 
-                            `<button class="cancel-btn" data-id="${transaction.id}"><i class="fas fa-times-circle"></i></button>`}
+                            `<button class="cancel-btn" data-id="${transaction.id}"><i class="fas fa-minus-circle"></i></button>`}
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -255,8 +255,8 @@ $totalPages = ceil($totalTransactions / $limit);
             }
         } else if (event.target.closest('.cancel-btn')) {
             const transactionId = event.target.closest('.cancel-btn').getAttribute('data-id');
-            if (confirm('Are you sure you want to mark this transaction as UNPAID?')) {
-                updateTransactionStatus(transactionId, 'UNPAID');
+            if (confirm('Are you sure you want to mark this transaction as PARTIALLY PAID?')) {
+                updateTransactionStatus(transactionId, 'PARTIALLY PAID');
             }
         } else if (event.target.closest('tr') && event.target.closest('tr').getAttribute('data-id')) {
             const transactionId = event.target.closest('tr').getAttribute('data-id');

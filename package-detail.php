@@ -28,120 +28,9 @@ if (!$package) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $package['title']; ?></title>
     <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/catering-packages.css">
+    <link rel="stylesheet" href="assets/css/packages.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* Main container */
-        .page-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            background-image: url("assets/images/bg2.jpg");
-            display: flex;
-            justify-content: center;
-            /* Centers horizontally */
-            align-items: center;
-            /* Centers vertically */
-        }
-
-        /* Back button at the top-left */
-        .back-button {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-        }
-
-        .back-button a {
-            text-decoration: none;
-            color: #333;
-            font-size: 16px;
-        }
-
-        /* Title positioned at the top-center */
-        .package-heading {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 2px solid #F59A23;
-            background-color: #333;
-            color: white;
-            padding: 10px;
-            font-size: 32px;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        /* Content wrapper to align elements horizontally */
-        .content-container {
-            display: flex;
-            justify-content: center;
-            /* Ensures both are centered */
-            align-items: center;
-            width: 90%;
-            /* Adjust width as needed */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        /* Image container (LEFT SIDE) */
-        .image-container {
-            position: absolute;
-            left: 0;
-            width: 50%;
-            /* Adjust width as needed */
-            display: flex;
-        }
-
-        .image-container img {
-            width: 100%;
-            height: auto;
-            border-radius: 10px;
-        }
-
-        /* Octagon container (RIGHT SIDE) */
-        .octagon-container {
-            position: absolute;
-            right: 0;
-            width: 50%;
-            height: auto;
-            background: #f0f0f0;
-            clip-path: polygon(10% 0%, 90% 0%, 100% 15%, 100% 85%, 90% 100%, 10% 100%, 0% 85%, 0% 15%);
-            display: flex;
-            padding: 40px;
-        }
-
-        /* Package description inside octagon */
-        .package-description {
-            font-size: 1.3rem;
-            text-align: left;
-            max-width: 80%;
-        }
-
-        /* Book now button positioned at the bottom-right */
-        .book-now-button {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-        }
-
-        .book-now-button .btn {
-            padding: 10px 20px;
-            background-color: #000;
-            color: #F59A23;
-            border: 2px solid #F59A23;
-            text-decoration: none;
-            border-radius: 15px;
-            font-size: 24px;
-            display: inline-block;
-        }
-
-        .book-now-button .btn:hover {
-            transform: scale(1.15);
-        }
-    </style>
+    
 </head>
 
 <body>
@@ -165,17 +54,165 @@ if (!$package) {
             <div class="octagon-container">
                 <div class="package-description">
                     <p><?php echo nl2br($package['description']); ?></p>
-                    <p>This Package Starts at <strong><?php echo number_format($package['price'], 2); ?></strong></p>
+                    <p>This Package Starts at <strong>₱<?php echo number_format($package['price'], 2, '.', ','); ?></strong></p>
                 </div>
             </div>
         </div>
 
         <!-- Book now button at the bottom-right -->
         <div class="book-now-button">
-            <a href="#" class="btn">Book Now!</a>
+            <a href="#" class="btn" onclick="openBookingModal(); return false;">Book Now!</a>
+        </div>
+
+        <!-- Booking Modal -->
+        <div id="booking-modal" class="modal">
+            <div class="modal-content">
+                <h2>Book <?php echo $package['title']; ?></h2>
+                <form id="quick-booking-form">
+                    <input type="hidden" name="event-name" value="<?php echo $package['title']; ?>">
+                    <input type="hidden" name="event-type" value="package">
+                    <input type="hidden" name="event-theme" value="<?php echo $package['title']; ?>">
+                    <input type="hidden" name="package-price" value="<?php echo number_format($package['price'], 2, '.', ''); ?>">
+
+                    <div class="form-group">
+                        <label for="event-date">Event Date:</label>
+                        <input type="date" id="event-date" name="event-date" min="<?= date('Y-m-d', strtotime('+1 day')) ?>" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-time-start">Start Time:</label>
+                        <input type="time" id="event-time-start" name="event-time-start" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="event-time-end">End Time:</label>
+                        <input type="time" id="event-time-end" name="event-time-end" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="number-of-guests">Number of Guests:</label>
+                        <input type="number" id="number-of-guests" name="number-of-guests" min="1" max="100" required>
+                    </div>
+
+                    <div class="button-group">
+                        <button type="submit">Proceed to Payment</button>
+                        <button type="button" onclick="closeBookingModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div id="payment-modal" class="modal">
+            <div class="modal-content">
+                <h2>Down Payment Required</h2>
+                <p>Total Amount: ₱<span id="totalAmount">0.00</span></p>
+                <p>Required Down Payment (50%): ₱<span id="downPayment">0.00</span></p>
+                <p>Please scan the QR code below to pay the down payment</p>
+                <img src="assets/images/qrCode.jpg" alt="Payment QR Code" style="width: 200px; height: 200px;">
+                <form id="payment-form" action="include/confirm_booking.php" method="POST">
+                    <!-- Hidden fields to carry over booking details -->
+                    <input type="hidden" name="package-price" id="payment-package-price">
+                    <input type="hidden" name="event-name" id="payment-event-name">
+                    <input type="hidden" name="event-date" id="payment-event-date">
+                    <input type="hidden" name="event-time-start" id="payment-event-time-start">
+                    <input type="hidden" name="event-time-end" id="payment-event-time-end">
+                    <input type="hidden" name="event-type" id="payment-event-type">
+                    <input type="hidden" name="event-theme" id="payment-event-theme">
+                    <input type="hidden" name="number-of-guests" id="payment-number-of-guests">
+
+                    <div class="form-group">
+                        <label for="reference-number">Reference Number:</label>
+                        <input type="text" id="reference-number" name="reference-number" pattern=".{13,13}" maxlength="13" required>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit">Confirm Payment</button>
+                        <button type="button" onclick="closePaymentModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
+    <script>
+        function openBookingModal() {
+            document.getElementById('booking-modal').style.display = 'block';
+        }
+
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+
+        document.getElementById('quick-booking-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            if (validateBookingForm()) {
+                // Get package price directly without multiplying by guests
+                const packagePrice = parseFloat(document.querySelector('input[name="package-price"]').value);
+                const totalAmount = packagePrice;
+                const downPayment = totalAmount * 0.5;
+
+                // Update payment modal with proper number formatting
+                document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                document.getElementById('downPayment').textContent = downPayment.toLocaleString('en-PH', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                // Transfer form data to payment form
+                document.getElementById('payment-package-price').value = packagePrice;
+                document.getElementById('payment-event-name').value = document.querySelector('input[name="event-name"]').value;
+                document.getElementById('payment-event-date').value = document.getElementById('event-date').value;
+                document.getElementById('payment-event-time-start').value = document.getElementById('event-time-start').value;
+                document.getElementById('payment-event-time-end').value = document.getElementById('event-time-end').value;
+                document.getElementById('payment-event-type').value = document.querySelector('input[name="event-type"]').value;
+                document.getElementById('payment-event-theme').value = document.querySelector('input[name="event-theme"]').value;
+                document.getElementById('payment-number-of-guests').value = document.getElementById('number-of-guests').value;
+
+                // Hide booking modal and show payment modal
+                closeBookingModal();
+                document.getElementById('payment-modal').style.display = 'block';
+            }
+        });
+
+        function validateBookingForm() {
+            const startTime = document.getElementById('event-time-start').value;
+            const endTime = document.getElementById('event-time-end').value;
+
+            if (startTime && endTime) {
+                const start = new Date(`1970-01-01T${startTime}`);
+                const end = new Date(`1970-01-01T${endTime}`);
+                const diff = (end - start) / (1000 * 60 * 60); // Difference in hours
+
+                if (diff < 1) {
+                    alert('The event duration must be at least 1 hour.');
+                    return false;
+                }
+
+                if (diff > 3) {
+                    alert('The event duration cannot exceed 3 hours.');
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        function closePaymentModal() {
+            document.getElementById('payment-modal').style.display = 'none';
+        }
+
+        // Reference number validation
+        document.getElementById('reference-number').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^\d]/g, '');
+            if (this.value.length > 13) {
+                this.value = this.value.slice(0, 13);
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -47,47 +47,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Login - Kevin's Restaurant and Resort</title>
     <link rel="stylesheet" href="assets/css/login-styles.css">
-    <style>
-        .login-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .form-group {
-            width: 100%;
-            max-width: 300px;
-            margin-bottom: 15px;
-        }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        .login-btn {
-            width: 100%;
-            max-width: 300px;
-            padding: 10px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .signup-link {
-            text-align: center;
-            margin-top: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
     <div class="login-container">
-        <div class="login-box">
+        <!-- Octagon on the left with logo -->
+        <div class="octagon-container">
             <img src="assets/images/logo.png" alt="Logo" class="logo">
-            <h2>Admin Login</h2>
+        </div>
+
+        <!-- Login form on the right -->
+        <div class="login-box">
+            <div class="form-header">
+                <i class="fas fa-user-circle"></i> <!-- Icon at the top -->
+                <h2>Admin Login</h2>
+            </div>
 
             <?php if (isset($error)) : ?>
                 <div class="error-message" style="color: red; text-align: center; margin-bottom: 10px;">
@@ -97,16 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <form method="POST" action="" class="login-form">
                 <div class="form-group">
-                    <label for="username">Username</label>
-                    <input type="text" id="username" name="username" required>
+                    <input type="text" id="username" name="username" placeholder="Username" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" name="password" placeholder="Password" required>
                 </div>
 
-                <button type="submit" class="login-btn">Login</button>
+                <button type="submit" class="btn-login">Login</button>
             </form>
         </div>
     </div>

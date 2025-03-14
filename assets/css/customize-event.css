@@ -21,6 +21,25 @@
   box-sizing: border-box; /* Make sure padding doesn't affect the width */
 }
 
+/* Radio Group Title Styling */
+.customize-event-form .form-group h3 {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+/* Updated Radio Group Styling */
+.customize-event-form .radio-group div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.customize-event-form .radio-group label {
+  font-size: 1.1em;
+  margin-left: 10px;
+}
+
 .customize-event-form .radio-group div {
   display: flex;
   align-items: center;
@@ -133,4 +152,149 @@
   background: #f0f0f0;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   box-sizing: border-box; /* Make sure padding does not affect the form width */
+}
+
+/* Full Course Meal Menu Styling */
+.full-course-menu .menu-list {
+  display: flex;
+  flex-wrap: wrap; /* Allow items to wrap into new rows */
+  justify-content: space-between; /* Distribute items evenly */
+  gap: 10px; /* Space between items */
+}
+
+.full-course-menu .menu-item {
+  flex: 1 1 calc(33.333% - 10px); /* Each item takes up 1/3 of the width minus the gap */
+  min-width: 300px; /* Set a minimum width to prevent items from getting too small */
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #fff;
+  box-sizing: border-box; /* Ensure padding doesn't affect the width */
+}
+
+/* Full Course Menu Radio Styling */
+.full-course-menu .menu-item label {
+  font-size: 1.1em;
+  display: block;
+  padding-left: 25px;
+}
+
+.full-course-menu .menu-item label strong:first-child {
+  font-size: 1.3em;
+  display: block;
+  color: #333;
+}
+
+.full-course-menu .menu-item input[type="radio"] {
+  float: left;
+  margin-top: 5px;
+}
+
+/* Modal base styling */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  position: relative; /* Change from fixed to relative */
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  margin: auto;
+  transform: none; /* Remove the transform */
+  top: auto; /* Remove the top */
+  left: auto; /* Remove the left */
+}
+
+/* Add these styles to your existing modal styles */
+.modal-content {
+  text-align: center;
+}
+
+.modal-content .form-group {
+  margin: 20px auto;
+  max-width: 300px;
+  text-align: center;
+}
+
+.modal-content label {
+  display: block;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.modal-content input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 24px;
+  font-size: 14px;
+  margin: 5px auto;
+  text-align: center;
+}
+
+.modal-content img {
+  display: block;
+  margin: 20px auto;
+}
+
+#confirmPayment {
+  width: auto;
+  padding: 12px 30px;
+  background-color: #333;
+  color: #F59A23;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+#confirmPayment:hover {
+  background-color: #494949;
+}
+
+.modal-content p {
+  margin: 10px 0;
+  font-size: 1.1em;
+}
+
+#totalAmount, #downPayment {
+  font-weight: bold;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.button-group button[type="submit"] {
+  background-color: #000;
+  color: #f59a23;
+}
+
+.button-group button[type="button"] {
+  background-color: #ccc;
 }

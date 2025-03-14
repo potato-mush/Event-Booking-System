@@ -1,0 +1,178 @@
+/* Main container */
+.page-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-image: url("assets/images/bg2.jpg");
+  display: flex;
+  justify-content: center;
+  /* Centers horizontally */
+  align-items: center;
+  /* Centers vertically */
+}
+
+/* Back button at the top-left */
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.back-button a {
+  text-decoration: none;
+  color: #333;
+  font-size: 16px;
+}
+
+/* Title positioned at the top-center */
+.package-heading {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 2px solid #f59a23;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+  font-size: 32px;
+  font-weight: bold;
+  text-align: center;
+}
+
+/* Content wrapper to align elements horizontally */
+.content-container {
+  display: flex;
+  justify-content: center;
+  /* Ensures both are centered */
+  align-items: center;
+  width: 90%;
+  /* Adjust width as needed */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* Image container (LEFT SIDE) */
+.image-container {
+  position: absolute;
+  left: 0;
+  width: 50%;
+  /* Adjust width as needed */
+  display: flex;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Octagon container (RIGHT SIDE) */
+.octagon-container {
+  position: absolute;
+  right: 0;
+  width: 50%;
+  height: auto;
+  background: #f0f0f0;
+  clip-path: polygon(
+    10% 0%,
+    90% 0%,
+    100% 15%,
+    100% 85%,
+    90% 100%,
+    10% 100%,
+    0% 85%,
+    0% 15%
+  );
+  display: flex;
+  padding: 40px;
+}
+
+/* Package description inside octagon */
+.package-description {
+  font-size: 1.3rem;
+  text-align: left;
+  max-width: 80%;
+}
+
+/* Book now button positioned at the bottom-right */
+.book-now-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.book-now-button .btn {
+  padding: 10px 20px;
+  background-color: #000;
+  color: #f59a23;
+  border: 2px solid #f59a23;
+  text-decoration: none;
+  border-radius: 15px;
+  font-size: 24px;
+  display: inline-block;
+}
+
+.book-now-button .btn:hover {
+  transform: scale(1.15);
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 500px;
+  border-radius: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.button-group button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
+
+.button-group button[type="submit"] {
+  background-color: #000;
+  color: #f59a23;
+}
+
+.button-group button[type="button"] {
+  background-color: #ccc;
+}

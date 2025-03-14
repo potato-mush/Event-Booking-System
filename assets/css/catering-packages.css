@@ -1,24 +1,15 @@
 .catering-packages {
   text-align: center;
-  background-image: url("../Images/bg2.jpg");
+  background-image: url("../images/bg2.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center; /* Center vertically */
   align-items: center; /* Center horizontally */
   position: relative; /* To position the overlay correctly */
-}
-
-/* Create the black filter overlay */
-.catering-packages::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.4); /* Black color with 30% opacity */
-  z-index: 1; /* Make sure the overlay is above the background but below the content */
 }
 
 /* Make sure the content stays above the overlay */

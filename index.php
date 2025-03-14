@@ -3,6 +3,9 @@ session_start(); // Start the session to access session data
 
 // Check if the user is logged in
 $loggedIn = isset($_SESSION['user_username']);  // Assuming you store the username in session when logged in
+
+// Define the $page variable
+$page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 ?>
 
 <!DOCTYPE html>
@@ -39,10 +42,10 @@ $loggedIn = isset($_SESSION['user_username']);  // Assuming you store the userna
     <div class="main">
         <nav class="sidebar">
             <ul>
-                <li><a href="index.php?page=dashboard">Dashboard</a></li>
-                <li><a href="index.php?page=catering-packages">Catering Packages</a></li>
-                <li><a href="index.php?page=customize-events">Customize Events</a></li>
-                <li><a href="index.php?page=contact-us">Contact Us</a></li>
+                <li><a href="index.php?page=dashboard" class="<?php echo $page === 'dashboard' ? 'active' : ''; ?>">Dashboard</a></li>
+                <li><a href="index.php?page=catering-packages" class="<?php echo $page === 'catering-packages' ? 'active' : ''; ?>">Catering Packages</a></li>
+                <li><a href="index.php?page=customize-events" class="<?php echo $page === 'customize-events' ? 'active' : ''; ?>">Customize Events</a></li>
+                <li><a href="index.php?page=contact-us" class="<?php echo $page === 'contact-us' ? 'active' : ''; ?>">Contact Us</a></li>
             </ul>
 
             <?php if ($loggedIn): ?>

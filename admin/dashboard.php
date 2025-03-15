@@ -16,10 +16,14 @@ $pendingBookingsQuery = "SELECT COUNT(*) as pendingBookings FROM booking WHERE s
 $pendingBookingsResult = $conn->query($pendingBookingsQuery);
 $pendingBookings = $pendingBookingsResult->fetch(PDO::FETCH_ASSOC)['pendingBookings'];
 
-// Fetch total paid amount
-$totalPaidQuery = "SELECT SUM(total_amount) as totalPaid FROM transactions WHERE status = 'PAID'";
-$totalPaidResult = $conn->query($totalPaidQuery);
-$totalPaid = $totalPaidResult->fetch(PDO::FETCH_ASSOC)['totalPaid'];
+// Fetch monthly revenue (current month)
+$monthlyRevenueQuery = "SELECT SUM(total_amount) as monthlyRevenue FROM transactions 
+    WHERE status = 'PAID' 
+    AND MONTH(transaction_date) = MONTH(CURRENT_DATE())
+    AND YEAR(transaction_date) = YEAR(CURRENT_DATE())";
+$monthlyRevenueResult = $conn->query($monthlyRevenueQuery);
+$monthlyRevenue = $monthlyRevenueResult->fetch(PDO::FETCH_ASSOC)['monthlyRevenue'] ?? 0;
+
 ?>
 
 <div class="dashboard-container">
@@ -46,8 +50,8 @@ $totalPaid = $totalPaidResult->fetch(PDO::FETCH_ASSOC)['totalPaid'];
         
         <div class="stat-card">
             <i class="fas fa-money-bill-wave"></i>
-            <h3>Total Paid Amount</h3>
-            <p class="number">₱<?php echo number_format($totalPaid, 2); ?></p>
+            <h3>Monthly Revenue</h3>
+            <p class="number">₱<?php echo number_format($monthlyRevenue, 2); ?></p>
         </div>
     </div>
     

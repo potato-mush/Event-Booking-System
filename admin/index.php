@@ -49,7 +49,8 @@ if (!$loggedIn) {
                 <li><a href="index.php?page=bookings"><i class="fas fa-calendar-check"></i> Bookings</a></li>
                 <li><a href="index.php?page=calendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
                 <li><a href="index.php?page=customer"><i class="fas fa-users"></i> Customers</a></li>
-                <li><a href="index.php?page=reports"><i class="fas fa-chart-bar"></i> Transactions</a></li>
+                <li><a href="index.php?page=transactions"><i class="fas fa-chart-bar"></i> Transactions</a></li>
+                <li><a href="index.php?page=reports"><i class="fas fa-file-alt"></i> Reports</a></li>
             </ul>
 
             <?php if ($loggedIn): ?>

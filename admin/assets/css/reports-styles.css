@@ -125,11 +125,11 @@
 }
 
 .cancel-btn {
-    color: #ffc107;
+    color: #dc3545;
 }
 
 .cancel-btn:hover {
-    background-color: #fff3cd;
+    background-color: #f8d7da;
 }
 
 .pending-btn {

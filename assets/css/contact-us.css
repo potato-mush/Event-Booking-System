@@ -49,9 +49,10 @@
 
 .message-section {
     width: 48%;
-    /* 50% width for message section */
     display: flex;
     flex-direction: column;
+    align-items: center;  /* Center horizontally */
+    text-align: center;   /* Center text content */
     gap: 15px;
     margin-right: 120px;
 }
@@ -64,20 +65,23 @@
 .textarea-container {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    align-items: center;  /* Center horizontally */
+    width: 100%;         /* Take full width */
     gap: 10px;
 }
 
 .textarea-container textarea {
-    width: 100%;
+    width: 90%;          /* Slightly less than 100% for better visual */
     padding: 16px;
     border: 1px solid #ccc;
     font-size: 18px;
     resize: none;
+    border-radius: 8px;  /* Optional: adds rounded corners */
     transition: border-color 0.3s ease;
 }
 
 .submit-btn {
+    width: 90%;          /* Match textarea width */
     padding: 16px;
     background-color: #F59A23;
     color: white;
@@ -150,4 +154,94 @@
     .contact-heading {
         font-size: 28px;
     }
+}
+
+.rate-us-section {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.rate-btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.rate-btn:hover {
+    background-color: #45a049;
+}
+
+
+.close {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    font-size: 28px;
+    cursor: pointer;
+}
+
+.rating {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.rating .fa-star {
+    font-size: 30px;
+    color: #ccc;
+    cursor: pointer;
+    margin: 0 5px;
+    transition: color 0.3s;
+}
+
+.rating .fa-star:hover {
+    color: #ffd700;
+}
+
+#ratingForm textarea {
+    width: 90%;
+    padding: 10px;
+    margin: 10px auto;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 100px;
+}
+
+#ratingForm button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 90%;
+    margin-top: 10px;
+}
+
+#ratingForm button:hover {
+    background-color: #45a049;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%;
+    max-width: 500px;
+    border-radius: 8px;
+    position: relative;
+    text-align: center;
+}
+
+#ratingForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }

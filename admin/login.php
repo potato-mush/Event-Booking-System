@@ -80,9 +80,128 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
 
                 <button type="submit" class="btn-login">Login</button>
+                <a href="#" class="forgot-password">Forgot Password?</a>
             </form>
         </div>
     </div>
+
+    <!-- Simplify to single reset modal -->
+    <div id="resetRequestModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('resetRequestModal')">&times;</span>
+            <h3>Reset Password</h3>
+            <p>Enter your email address to receive a new password.</p>
+            <input type="email" id="resetEmail" placeholder="Enter your email">
+            <button onclick="requestReset()">Reset Password</button>
+        </div>
+    </div>
+
+    <script>
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    document.querySelector('.forgot-password').addEventListener('click', function(e) {
+        e.preventDefault();
+        document.getElementById('resetRequestModal').style.display = 'block';
+    });
+
+    function requestReset() {
+        const email = document.getElementById('resetEmail').value;
+        fetch('includes/admin_reset_password.php', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `action=request_reset&email=${encodeURIComponent(email)}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.message);
+            if (data.success) {
+                document.getElementById('resetRequestModal').style.display = 'none';
+            }
+        });
+    }
+    </script>
+
+    <style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: 10% auto;
+        padding: 30px;
+        border: none;
+        width: 90%;
+        max-width: 400px;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .modal-content h3 {
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+        font-size: 1.5em;
+    }
+    .modal-content p {
+        color: #666;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .modal-content input {
+        width: 100%;
+        padding: 12px;
+        margin: 8px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
+    .modal-content button {
+        width: 100%;
+        padding: 12px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 15px;
+        font-size: 16px;
+    }
+    .close-modal {
+        position: absolute;
+        right: -15px;
+        top: -15px;
+        width: 30px;
+        height: 30px;
+        background: #f44336;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 18px;
+    }
+    .forgot-password {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #666;
+        text-decoration: none;
+    }
+    .forgot-password:hover {
+        color: #4CAF50;
+    }
+    </style>
 </body>
 
 </html>

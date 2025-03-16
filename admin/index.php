@@ -5,6 +5,9 @@ require_once 'includes/db_connection.php';
 // Check if the user is logged in
 $loggedIn = isset($_SESSION['admin_username']);  // Assuming you store the username in session when logged in
 
+// Get current page
+$page = $_GET['page'] ?? 'dashboard';
+
 // Redirect to login page if not logged in
 if (!$loggedIn) {
     header('Location: login.php');
@@ -45,12 +48,12 @@ if (!$loggedIn) {
     <div class="main">
         <nav class="sidebar">
             <ul>
-                <li><a href="index.php?page=dashboard"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                <li><a href="index.php?page=bookings"><i class="fas fa-calendar-check"></i> Bookings</a></li>
-                <li><a href="index.php?page=calendar"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
-                <li><a href="index.php?page=customer"><i class="fas fa-users"></i> Customers</a></li>
-                <li><a href="index.php?page=transactions"><i class="fas fa-chart-bar"></i> Transactions</a></li>
-                <li><a href="index.php?page=reports"><i class="fas fa-file-alt"></i> Reports</a></li>
+                <li><a href="index.php?page=dashboard" class="<?php echo ($page === 'dashboard') ? 'active' : ''; ?>"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="index.php?page=bookings" class="<?php echo ($page === 'bookings') ? 'active' : ''; ?>"><i class="fas fa-calendar-check"></i> Bookings</a></li>
+                <li><a href="index.php?page=calendar" class="<?php echo ($page === 'calendar') ? 'active' : ''; ?>"><i class="fas fa-calendar-alt"></i> Calendar</a></li>
+                <li><a href="index.php?page=customer" class="<?php echo ($page === 'customer') ? 'active' : ''; ?>"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="index.php?page=transactions" class="<?php echo ($page === 'transactions') ? 'active' : ''; ?>"><i class="fas fa-chart-bar"></i> Transactions</a></li>
+                <li><a href="index.php?page=reports" class="<?php echo ($page === 'reports') ? 'active' : ''; ?>"><i class="fas fa-file-alt"></i> Reports</a></li>
             </ul>
 
             <?php if ($loggedIn): ?>
@@ -61,7 +64,6 @@ if (!$loggedIn) {
         <div class="content">
             <?php
             // Handle page content
-            $page = $_GET['page'] ?? 'dashboard';
             $page_file = "{$page}.php";
 
             if (file_exists($page_file)) {

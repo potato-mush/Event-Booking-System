@@ -55,7 +55,7 @@ try {
                     $mail->Host       = 'smtp.gmail.com';     
                     $mail->SMTPAuth   = true;                 
                     $mail->Username   = 'kevinsresort.restaurant@gmail.com'; // Your Gmail address
-                    $mail->Password   = 'hjbz umns dzyb eqes'; // Your Gmail App Password
+                    $mail->Password   = 'ymso radd rgij dvsp'; // Your Gmail App Password
                     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Use SMTP Secure (SSL/TLS)
                     $mail->Port       = 465;                   // TCP port to connect to (465 for SSL)
 

@@ -1,23 +1,38 @@
 <?php
 if (session_status() == PHP_SESSION_NONE) {
-    session_start(); // Start the session to access session data
+    session_start();
 }
+
+// Force JSON response
+header('Content-Type: application/json');
 
 // Check if the user is logged in
 if (!isset($_SESSION['user_username'])) {
-    header('Location: ../login.php');
+    echo json_encode(['status' => 'error', 'message' => 'User not logged in']);
     exit();
 }
 
 // Fetch user's personal info from the database
 require 'db_connection.php';
 
-$userInfo = [];
-if (isset($_SESSION['user_username'])) {
-    $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
-    $stmt->execute([$_SESSION['user_username']]);
-    $userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+// Only process if we have a reference number
+if (!isset($_POST['reference-number'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Reference number is required']);
+    exit();
 }
+
+// Check for duplicate reference number first
+$stmt = $conn->prepare("SELECT COUNT(*) FROM transactions WHERE reference_number = ?");
+$stmt->execute([$_POST['reference-number']]);
+if ($stmt->fetchColumn() > 0) {
+    echo json_encode(['status' => 'error', 'message' => 'This reference number has already been used']);
+    exit();
+}
+
+// Get user info
+$stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+$stmt->execute([$_SESSION['user_username']]);
+$userInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventName = $_POST['event-name'];
@@ -25,6 +40,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventTimeStart = $_POST['event-time-start'];
     $eventTimeEnd = $_POST['event-time-end'];
     $numberOfGuests = intval($_POST['number-of-guests']);
+
+    // Check number of events for the selected date
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM booking WHERE event_date = ?");
+    $stmt->execute([$eventDate]);
+    $eventCount = $stmt->fetchColumn();
+
+    if ($eventCount >= 3) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Maximum number of events (3) already reached for this date.'
+        ]);
+        exit();
+    }
+
+    // Check for time slot conflicts
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM booking WHERE event_date = ? AND (
+        (? BETWEEN event_time_start AND event_time_end) OR
+        (? BETWEEN event_time_start AND event_time_end) OR
+        (event_time_start BETWEEN ? AND ?) OR
+        (event_time_end BETWEEN ? AND ?)
+    )");
+    $stmt->execute([$eventDate, $eventTimeStart, $eventTimeEnd, $eventTimeStart, $eventTimeEnd, $eventTimeStart, $eventTimeEnd]);
+    $timeConflicts = $stmt->fetchColumn();
+
+    if ($timeConflicts > 0) {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Selected time slot conflicts with an existing event.'
+        ]);
+        exit();
+    }
     
     // For package bookings
     if (isset($_POST['package-price'])) {
@@ -107,17 +153,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $currentDate = date("Y-m-d");
 
-    // Save booking and transaction details to the database
-    $stmt = $conn->prepare("INSERT INTO booking (event_name, event_type, event_date, event_time_start, event_time_end, event_theme, menu_type, guest_no, seating_arrangement, preferred_entertainment, decoration_preferences, additional_services, status, user_id, menu_title, menu_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)");
-    $stmt->execute([$eventName, $eventType, $eventDate, $eventTimeStart, $eventTimeEnd, $eventTheme, $menuType, $numberOfGuests, $seatingArrangement, $preferredEntertainment, $decoration, $additionalServices, $userInfo['id'], $menuTitle, $totalMenuPrice]);
-    $bookingId = $conn->lastInsertId();
+    try {
+        // Start transaction to ensure data consistency
+        $conn->beginTransaction();
+        
+        // Save booking and transaction details to the database
+        $stmt = $conn->prepare("INSERT INTO booking (event_name, event_type, event_date, event_time_start, event_time_end, event_theme, menu_type, guest_no, seating_arrangement, preferred_entertainment, decoration_preferences, additional_services, status, user_id, menu_title, menu_price) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'PENDING', ?, ?, ?)");
+        $stmt->execute([$eventName, $eventType, $eventDate, $eventTimeStart, $eventTimeEnd, $eventTheme, $menuType, $numberOfGuests, $seatingArrangement, $preferredEntertainment, $decoration, $additionalServices, $userInfo['id'], $menuTitle, $totalMenuPrice]);
+        $bookingId = $conn->lastInsertId();
 
-    $stmt = $conn->prepare("INSERT INTO transactions (booking_id, user_id, transaction_date, transaction_number, total_amount, status, reference_number) VALUES (?, ?, ?, ?, ?, 'PENDING', ?)");
-    $stmt->execute([$bookingId, $userInfo['id'], $currentDate, $transactionNumber, $totalPrice, $referenceNumber]);
+        $stmt = $conn->prepare("INSERT INTO transactions (booking_id, user_id, transaction_date, transaction_number, total_amount, status, reference_number) VALUES (?, ?, ?, ?, ?, 'PENDING', ?)");
+        $stmt->execute([$bookingId, $userInfo['id'], $currentDate, $transactionNumber, $totalPrice, $referenceNumber]);
 
-    // Store booking ID in session
-    $_SESSION['temp_booking_id'] = $bookingId;
-    header('Location: ../index.php?page=receipt');
+        // Commit the transaction
+        $conn->commit();
+        
+        // Store booking ID in session
+        $_SESSION['temp_booking_id'] = $bookingId;
+        echo json_encode(['status' => 'success']);
+        
+    } catch (Exception $e) {
+        // Rollback the transaction if any error occurs
+        $conn->rollBack();
+        error_log($e->getMessage()); // Log the error
+        echo json_encode(['status' => 'error', 'message' => 'An error occurred while processing your booking']);
+    }
     exit();
 }
 ?>

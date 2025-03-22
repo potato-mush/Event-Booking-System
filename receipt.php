@@ -133,35 +133,101 @@ if (isset($_SESSION['temp_booking_id'])) {
 }
 ?>
 
-<div class="receipt">
-    <h2>Event Receipt</h2>
-    <p><strong>Total Price:</strong> ₱<?= number_format($totalPrice, 2) ?></p>
-    <p><strong>Event Name:</strong> <?= htmlspecialchars($eventName) ?></p>
-    <p><strong>Event Date:</strong> <?= htmlspecialchars($eventDate) ?></p>
-    <p><strong>Event Time:</strong> <?= formatTime($eventTimeStart) ?> to <?= formatTime($eventTimeEnd) ?></p>
-    <p><strong>Event Theme:</strong> <?= htmlspecialchars($eventTheme) ?></p>
-    <p><strong>Number of Guests:</strong> <?= htmlspecialchars($numberOfGuests) ?></p>
-    <p><strong>Seating Arrangement:</strong> <?= htmlspecialchars(normalizeOptionName($seatingArrangement)) ?></p>
-    <p><strong>Menu Type:</strong> <?= htmlspecialchars(normalizeOptionName($menuType)) ?><?= $menuTitle ? ' (' . htmlspecialchars($menuTitle) . ')' : '' ?></p>
-    <?php if ($totalMenuPrice > 0): ?>
-    <p><strong>Total Menu Price:</strong> ₱<?= number_format($totalMenuPrice, 2) ?></p>
-    <?php endif; ?>
-    <p><strong>Additional Services:</strong> <?= htmlspecialchars(normalizeOptionName($additionalServices)) ?></p>
-    <p><strong>Preferred Entertainment:</strong> <?= htmlspecialchars(normalizeOptionName($preferredEntertainment)) ?></p>
-    <p><strong>Event Type:</strong> <?= htmlspecialchars(normalizeOptionName($eventType)) ?></p>
-    <p><strong>Decoration:</strong> <?= htmlspecialchars(normalizeOptionName($decoration)) ?></p>
-    <p><strong>Reference Number:</strong> <?= htmlspecialchars($referenceNumber) ?></p>
-    <p><strong>Payment Status:</strong> 50% Down Payment</p>
-    <div class="user-info">
-        <h3>User Information</h3>
-        <p><strong>Name:</strong> <?= htmlspecialchars($userInfo['first_name'] . ' ' . $userInfo['last_name']) ?></p>
-        <p><strong>Email:</strong> <?= htmlspecialchars($userInfo['email']) ?></p>
-        <p><strong>Account Created:</strong> <?= htmlspecialchars($userInfo['created_at']) ?></p>
-        <p><strong>Address:</strong> <?= htmlspecialchars($userInfo['address']) ?></p>
-        <p><strong>Phone Number:</strong> <?= htmlspecialchars($userInfo['phone_number']) ?></p>
+<div class="print-preview-content">
+    <div id="print-content">
+        <div id="receipt-logo">
+            <img src="assets/images/logo.png" alt="Logo" style="width: 150px; display: block; margin: 0 auto;">
+        </div>
+        <h3>Event Payment Receipt</h3>
+        <div id="receipt-header">
+            <p style="text-align: left; float: left;"><strong>Date:</strong> <?= htmlspecialchars($currentDate) ?></p>
+            <p style="text-align: right; float: right;"><strong>Transaction Number:</strong> <?= htmlspecialchars($transactionNumber) ?></p>
+        </div>
+        <div style="clear: both;"></div>
+        <div id="receipt-details">
+            <h3>Guest Attendees Information</h3>
+            <div class="receipt-row">
+                <span class="receipt-label">Guest/Attendee Name:</span>
+                <span class="receipt-value"><?= htmlspecialchars($userInfo['first_name'] . ' ' . $userInfo['last_name']) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Email:</span>
+                <span class="receipt-value"><?= htmlspecialchars($userInfo['email']) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Number of Guests:</span>
+                <span class="receipt-value"><?= htmlspecialchars($numberOfGuests) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Phone Number:</span>
+                <span class="receipt-value"><?= htmlspecialchars($userInfo['phone_number']) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Address:</span>
+                <span class="receipt-value"><?= htmlspecialchars($userInfo['address']) ?></span>
+            </div>
+
+            <h3>Event Information</h3>
+            <div class="receipt-row">
+                <span class="receipt-label">Event Name:</span>
+                <span class="receipt-value"><?= htmlspecialchars($eventName) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Event Date:</span>
+                <span class="receipt-value"><?= htmlspecialchars($eventDate) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Event Time:</span>
+                <span class="receipt-value"><?= formatTime($eventTimeStart) ?> to <?= formatTime($eventTimeEnd) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Event Theme:</span>
+                <span class="receipt-value"><?= htmlspecialchars($eventTheme) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Seating Arrangement:</span>
+                <span class="receipt-value"><?= htmlspecialchars(normalizeOptionName($seatingArrangement)) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Menu Type:</span>
+                <span class="receipt-value"><?= htmlspecialchars(normalizeOptionName($menuType)) ?><?= $menuTitle ? ' (' . htmlspecialchars($menuTitle) . ')' : '' ?></span>
+            </div>
+            <?php if ($totalMenuPrice > 0): ?>
+            <div class="receipt-row">
+                <span class="receipt-label">Menu Price:</span>
+                <span class="receipt-value">₱<?= number_format($totalMenuPrice, 2) ?></span>
+            </div>
+            <?php endif; ?>
+            <div class="receipt-row">
+                <span class="receipt-label">Additional Services:</span>
+                <span class="receipt-value"><?= htmlspecialchars(normalizeOptionName($additionalServices)) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Preferred Entertainment:</span>
+                <span class="receipt-value"><?= htmlspecialchars(normalizeOptionName($preferredEntertainment)) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Event Type:</span>
+                <span class="receipt-value"><?= htmlspecialchars(normalizeOptionName($eventType)) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Decoration:</span>
+                <span class="receipt-value"><?= htmlspecialchars(normalizeOptionName($decoration)) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Reference Number:</span>
+                <span class="receipt-value"><?= htmlspecialchars($referenceNumber) ?></span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Payment Status:</span>
+                <span class="receipt-value">50% Down Payment</span>
+            </div>
+            <div class="receipt-row">
+                <span class="receipt-label">Total Amount:</span>
+                <span class="receipt-value">₱<?= number_format($totalPrice, 2) ?></span>
+            </div>
+        </div>
     </div>
-    <p><strong>Transaction Number:</strong> <?= htmlspecialchars($transactionNumber) ?></p>
-    <p><strong>Date:</strong> <?= htmlspecialchars($currentDate) ?></p>
     <form method="POST">
         <input type="hidden" name="event-name" value="<?= htmlspecialchars($eventName) ?>">
         <input type="hidden" name="event-date" value="<?= htmlspecialchars($eventDate) ?>">
@@ -182,12 +248,70 @@ if (isset($_SESSION['temp_booking_id'])) {
     </form>
 </div>
 
+<style>
+/* Update the existing styles with the new receipt styles */
+.print-preview-content {
+    background-color: #fefefe;
+    margin: 20px auto;
+    padding: 20px;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#receipt-logo {
+    margin-bottom: 20px;
+}
+
+#receipt-header {
+    margin-bottom: 30px;
+    overflow: hidden;
+}
+
+.receipt-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    padding: 5px 0;
+    border-bottom: 1px dotted #ddd;
+}
+
+.receipt-label {
+    font-weight: bold;
+    color: #555;
+}
+
+.receipt-value {
+    text-align: right;
+}
+
+#receipt-details h3 {
+    margin: 20px 0 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #007bff;
+    color: #333;
+}
+
+@media print {
+    .print-preview-content {
+        margin: 0 auto;
+        box-shadow: none;
+    }
+
+    form {
+        display: none;
+    }
+}
+</style>
+
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm_booking'])) {
     $bookingId = $_POST['booking_id'];
     
     // Update booking and transaction status
-    $stmt = $conn->prepare("UPDATE booking SET status = 'CONFIRMED' WHERE id = ?");
+    $stmt = $conn->prepare("UPDATE booking SET status = 'PENDING' WHERE id = ?");
     $stmt->execute([$bookingId]);
     
     $stmt = $conn->prepare("UPDATE transactions SET status = 'PARTIALLY PAID' WHERE booking_id = ?");

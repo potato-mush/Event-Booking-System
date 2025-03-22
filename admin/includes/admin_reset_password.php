@@ -42,23 +42,17 @@ try {
 
                 $mail = new PHPMailer(true);
                 try {
-                    $mail->SMTPDebug = 0;
+                    $mail->SMTPDebug = 2; // Enable verbose debug output temporarily
                     $mail->isSMTP();
                     $mail->Host       = 'smtp.gmail.com';
                     $mail->SMTPAuth   = true;
                     $mail->Username   = 'kevinsresort.restaurant@gmail.com';
-                    $mail->Password   = 'hjbz umns dzyb eqes';
-                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-                    $mail->Port       = 465;
+                    $mail->Password   = 'ymso radd rgij dvsp'; // Replace with new App Password
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS; // Changed to STARTTLS
+                    $mail->Port       = 587; // Changed to TLS port
 
-                    $mail->SMTPOptions = array(
-                        'ssl' => array(
-                            'verify_peer' => false,
-                            'verify_peer_name' => false,
-                            'allow_self_signed' => true
-                        )
-                    );
-
+                    // Remove SMTPOptions as they're not needed for Gmail
+                    
                     $mail->setFrom('kevinsresort.restaurant@gmail.com', 'Kevin\'s Restaurant Admin');
                     $mail->addAddress($email);
 
@@ -71,7 +65,9 @@ try {
                         <p>Please login with this password and change it immediately.</p>
                     ";
 
-                    $mail->send();
+                    if (!$mail->send()) {
+                        throw new Exception("Email sending failed: " . $mail->ErrorInfo);
+                    }
                     $response['success'] = true;
                     $response['message'] = 'A new password has been sent to your email.';
                 } catch (Exception $e) {

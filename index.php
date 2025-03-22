@@ -44,8 +44,11 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
             <ul>
                 <li><a href="index.php?page=dashboard" class="<?php echo $page === 'dashboard' ? 'active' : ''; ?>">Dashboard</a></li>
                 <li><a href="index.php?page=catering-packages" class="<?php echo $page === 'catering-packages' ? 'active' : ''; ?>">Catering Packages</a></li>
-                <li><a href="index.php?page=customize-events" class="<?php echo $page === 'customize-events' ? 'active' : ''; ?>">Customize Events</a></li>
+                <li><a href="index.php?page=customize-events" class="<?php echo $page === 'customize-events' ? 'active' : ''; ?>">Customize Package</a></li>
                 <li><a href="index.php?page=contact-us" class="<?php echo $page === 'contact-us' ? 'active' : ''; ?>">Contact Us</a></li>
+                <?php if ($loggedIn): ?>
+                <li><a href="index.php?page=manage-bookings" class="<?php echo $page === 'manage-bookings' ? 'active' : ''; ?>">Manage Bookings</a></li>
+                <?php endif; ?>
             </ul>
 
             <?php if ($loggedIn): ?>
@@ -53,13 +56,13 @@ $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
             <?php endif; ?>
         </nav>
 
-        <div class="content">
+        <div class="content <?php echo $page === 'dashboard' ? 'dashboard-page' : ''; ?>">
             <?php
             // index.php
             $page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
-            $allowedPages = ['dashboard', 'catering-packages', 'customize-events', 'contact-us', 'package-detail', 'receipt'];
+            $allowedPages = ['dashboard', 'catering-packages', 'customize-events', 'contact-us', 'package-detail', 'receipt', 'manage-bookings'];
             if (in_array($page, $allowedPages)) {
-                if ($page === 'receipt' && !$loggedIn) {
+                if (($page === 'receipt' || $page === 'manage-bookings') && !$loggedIn) {
                     header('Location: login.php');
                     exit();
                 }

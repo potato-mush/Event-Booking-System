@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($user && password_verify($password, $user['password'])) {
         $_SESSION['user_user_id'] = $user['id'];
         $_SESSION['user_username'] = $user['username'];
+        $_SESSION['user_id'] = $user['id']; // Make sure this line exists
         header('Location: index.php');
         exit();
     } else {

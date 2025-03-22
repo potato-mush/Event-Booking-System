@@ -42,7 +42,7 @@ $fullCourseMenu = getFullCourseMenu();
 
 ?>
 
-<form class="customize-event-form" action="include/confirm_booking.php" method="POST" onsubmit="return validateForm()">
+<form class="customize-event-form" method="POST">  <!-- Remove action attribute -->
     <!-- Event Name, Date, and Time grouped together -->
     <div class="form-group">
         <h3 for="event-name">Event Name/Title</h3>
@@ -205,6 +205,23 @@ $fullCourseMenu = getFullCourseMenu();
     <button type="submit" id="submitForm">Confirm</button>
 </form>
 
+<!-- Error Modal -->
+<?php if (isset($_SESSION['show_modal']) && $_SESSION['show_modal']): ?>
+<div class="modal" id="errorModal" style="display: block; z-index: 1001;">
+    <div class="modal-content">
+        <h2>Booking Error</h2>
+        <p><?php echo $_SESSION['modal_message']; ?></p>
+        <div class="button-group">
+            <button type="button" onclick="document.getElementById('errorModal').style.display='none'">Close</button>
+        </div>
+    </div>
+</div>
+<?php 
+    unset($_SESSION['show_modal']);
+    unset($_SESSION['modal_message']);
+endif; 
+?>
+
 <!-- Payment Modal -->
 <div id="payment-modal" class="modal">
     <div class="modal-content">
@@ -302,12 +319,53 @@ $fullCourseMenu = getFullCourseMenu();
         return total;
     }
 
+    // Add this function to create error modal dynamically
+    function showErrorModal(message) {
+        // Remove existing error modal if any
+        const existingModal = document.getElementById('errorModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        // Create new error modal
+        const modalHtml = `
+            <div class="modal" id="errorModal" style="display: block; z-index: 1001;">
+                <div class="modal-content">
+                    <h2>Booking Error</h2>
+                    <p>${message}</p>
+                    <div class="button-group">
+                        <button type="button" onclick="document.getElementById('errorModal').style.display='none'">Close</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+    }
+
     // Modify the form submission
-    document.querySelector('.customize-event-form').addEventListener('submit', function(e) {
+    document.querySelector('.customize-event-form').addEventListener('submit', async function(e) {
         e.preventDefault();
-        if (validateForm()) {
+        
+        if (!validateForm()) return;
+
+        // First check for date and time conflicts
+        const formData = new FormData(this);
+        try {
+            const checkResponse = await fetch('include/check_availability.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const checkResult = await checkResponse.json();
+            if (checkResult.status === 'error') {
+                showErrorModal(checkResult.message);
+                return;
+            }
+
+            // If no errors, show payment modal
             const totalAmount = calculateTotal();
             const downPayment = totalAmount * 0.5;
+            
             document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('en-PH', {
                 style: 'decimal',
                 minimumFractionDigits: 2,
@@ -319,32 +377,48 @@ $fullCourseMenu = getFullCourseMenu();
                 maximumFractionDigits: 2
             });
             document.getElementById('payment-modal').style.display = 'block';
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal('An error occurred while checking availability. Please try again.');
         }
     });
 
-    document.getElementById('confirmPayment').addEventListener('click', function() {
+    // Replace confirmPayment event listener
+    document.getElementById('confirmPayment').addEventListener('click', async function() {
         const refNumber = document.getElementById('reference-number').value;
-        if (refNumber.length === 13) {
-            const form = document.querySelector('.customize-event-form');
-            // Add reference number to form
-            let refInput = document.querySelector('input[name="reference-number"]');
-            if (!refInput) {
-                refInput = document.createElement('input');
-                refInput.type = 'hidden';
-                refInput.name = 'reference-number';
-                form.appendChild(refInput);
-            }
-            refInput.value = refNumber;
-            // Submit the form
-            form.submit();
-        } else {
+        if (refNumber.length !== 13) {
             alert('Please enter a valid 13-character reference number.');
+            return;
         }
-    });
 
-    // Add cancel button handler
-    document.getElementById('cancelPayment').addEventListener('click', function() {
-        document.getElementById('payment-modal').style.display = 'none';
+        // Disable the confirm button to prevent double submission
+        this.disabled = true;
+
+        const form = document.querySelector('.customize-event-form');
+        const formData = new FormData(form);
+        formData.append('reference-number', refNumber);
+
+        try {
+            const response = await fetch('include/confirm_booking.php', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            if (result.status === 'success') {
+                // Redirect on success
+                window.location.href = 'index.php?page=receipt';
+            } else {
+                showErrorModal(result.message || 'An error occurred during booking.');
+                // Re-enable the button on error
+                this.disabled = false;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            showErrorModal('An error occurred. Please try again.');
+            // Re-enable the button on error
+            this.disabled = false;
+        }
     });
 
     // Add this to handle reference number input
@@ -358,6 +432,7 @@ $fullCourseMenu = getFullCourseMenu();
         }
     });
 
+    // Define the closePaymentModal function
     function closePaymentModal() {
         document.getElementById('payment-modal').style.display = 'none';
     }

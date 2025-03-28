@@ -356,13 +356,17 @@ endif;
                 body: formData
             });
             
+            if (!checkResponse.ok) {
+                throw new Error('Network response was not ok');
+            }
+
             const checkResult = await checkResponse.json();
             if (checkResult.status === 'error') {
                 showErrorModal(checkResult.message);
-                return;
+                return; // Stop here if there's an error
             }
 
-            // If no errors, show payment modal
+            // Only proceed to payment modal if there are no errors
             const totalAmount = calculateTotal();
             const downPayment = totalAmount * 0.5;
             

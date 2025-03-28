@@ -54,24 +54,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    // Check for time slot conflicts
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM booking WHERE event_date = ? AND (
-        (? BETWEEN event_time_start AND event_time_end) OR
-        (? BETWEEN event_time_start AND event_time_end) OR
-        (event_time_start BETWEEN ? AND ?) OR
-        (event_time_end BETWEEN ? AND ?)
-    )");
-    $stmt->execute([$eventDate, $eventTimeStart, $eventTimeEnd, $eventTimeStart, $eventTimeEnd, $eventTimeStart, $eventTimeEnd]);
-    $timeConflicts = $stmt->fetchColumn();
+    // Update the time conflict check to include the 3-hour buffer
+    $stmt = $conn->prepare("SELECT 
+        event_time_start,
+        ADDTIME(event_time_end, '03:00:00') as buffered_end_time 
+        FROM booking 
+        WHERE event_date = ?");
+    $stmt->execute([$eventDate]);
+    $existingBookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    if ($timeConflicts > 0) {
-        echo json_encode([
-            'status' => 'error',
-            'message' => 'Selected time slot conflicts with an existing event.'
-        ]);
-        exit();
+    foreach ($existingBookings as $booking) {
+        $existingStart = strtotime($booking['event_time_start']);
+        $existingEndWithBuffer = strtotime($booking['buffered_end_time']);
+        $requestedStart = strtotime($eventTimeStart);
+        $requestedEnd = strtotime($eventTimeEnd);
+
+        if (
+            ($requestedStart >= $existingStart && $requestedStart < $existingEndWithBuffer) ||
+            ($requestedEnd > $existingStart && $requestedEnd <= $existingEndWithBuffer) ||
+            ($requestedStart <= $existingStart && $requestedEnd >= $existingEndWithBuffer)
+        ) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Selected time slot conflicts with an existing event. Please allow at least 3 hours between events.'
+            ]);
+            exit();
+        }
     }
-    
+
     // For package bookings
     if (isset($_POST['package-price'])) {
         // Use package price directly

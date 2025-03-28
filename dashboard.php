@@ -1,8 +1,13 @@
+
 <div class="container">
     <div class="centered-text">
         <h1>Escape to Paradise</h1>
         <p>Your Ultimate Resort & Event Destination</p>
-        <a href="index.php?page=catering-packages" class="cta-button">Book Now!</a>
+        <?php if(isset($_SESSION['user_id'])): ?>
+            <a href="index.php?page=catering-packages" class="cta-button">Book Now!</a>
+        <?php else: ?>
+            <a href="login.php" class="cta-button">Book Now!</a>
+        <?php endif; ?>
     </div>
 
     <div class="images-container">

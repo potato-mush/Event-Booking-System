@@ -147,34 +147,74 @@ if (!$package) {
             e.preventDefault();
 
             if (validateBookingForm()) {
-                // Get package price directly without multiplying by guests
-                const packagePrice = parseFloat(document.querySelector('input[name="package-price"]').value);
-                const totalAmount = packagePrice;
-                const downPayment = totalAmount * 0.5;
+                const formData = new FormData(this);
+                
+                // First check availability
+                fetch('include/check_availability.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'error') {
+                        // Show error modal
+                        const modalHtml = `
+                            <div class="modal" id="errorModal" style="display: block; z-index: 1001;">
+                                <div class="modal-content">
+                                    <h2>Booking Error</h2>
+                                    <p>${result.message}</p>
+                                    <div class="button-group">
+                                        <button type="button" onclick="document.getElementById('errorModal').remove()">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        document.body.insertAdjacentHTML('beforeend', modalHtml);
+                        return;
+                    }
 
-                // Update payment modal with proper number formatting
-                document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('en-PH', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
+                    // If availability check passes, proceed with payment modal
+                    const packagePrice = parseFloat(document.querySelector('input[name="package-price"]').value);
+                    const totalAmount = packagePrice;
+                    const downPayment = totalAmount * 0.5;
+
+                    document.getElementById('totalAmount').textContent = totalAmount.toLocaleString('en-PH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+                    document.getElementById('downPayment').textContent = downPayment.toLocaleString('en-PH', {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    });
+
+                    // Transfer form data to payment form
+                    document.getElementById('payment-package-price').value = packagePrice;
+                    document.getElementById('payment-event-name').value = document.querySelector('input[name="event-name"]').value;
+                    document.getElementById('payment-event-date').value = document.getElementById('event-date').value;
+                    document.getElementById('payment-event-time-start').value = document.getElementById('event-time-start').value;
+                    document.getElementById('payment-event-time-end').value = document.getElementById('event-time-end').value;
+                    document.getElementById('payment-event-type').value = document.querySelector('input[name="event-type"]').value;
+                    document.getElementById('payment-event-theme').value = document.querySelector('input[name="event-theme"]').value;
+                    document.getElementById('payment-number-of-guests').value = document.getElementById('number-of-guests').value;
+
+                    // Show payment modal
+                    document.getElementById('payment-modal').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    const modalHtml = `
+                        <div class="modal" id="errorModal" style="display: block; z-index: 1001;">
+                            <div class="modal-content">
+                                <h2>Booking Error</h2>
+                                <p>An error occurred while checking availability. Please try again.</p>
+                                <div class="button-group">
+                                    <button type="button" onclick="document.getElementById('errorModal').remove()">Close</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.insertAdjacentHTML('beforeend', modalHtml);
                 });
-                document.getElementById('downPayment').textContent = downPayment.toLocaleString('en-PH', {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2
-                });
-
-                // Transfer form data to payment form
-                document.getElementById('payment-package-price').value = packagePrice;
-                document.getElementById('payment-event-name').value = document.querySelector('input[name="event-name"]').value;
-                document.getElementById('payment-event-date').value = document.getElementById('event-date').value;
-                document.getElementById('payment-event-time-start').value = document.getElementById('event-time-start').value;
-                document.getElementById('payment-event-time-end').value = document.getElementById('event-time-end').value;
-                document.getElementById('payment-event-type').value = document.querySelector('input[name="event-type"]').value;
-                document.getElementById('payment-event-theme').value = document.querySelector('input[name="event-theme"]').value;
-                document.getElementById('payment-number-of-guests').value = document.getElementById('number-of-guests').value;
-
-                // Hide booking modal and show payment modal
-                closeBookingModal();
-                document.getElementById('payment-modal').style.display = 'block';
             }
         });
 
@@ -211,6 +251,29 @@ if (!$package) {
             if (this.value.length > 13) {
                 this.value = this.value.slice(0, 13);
             }
+        });
+
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            
+            fetch('include/confirm_booking.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    window.location.href = 'index.php?page=receipt';
+                } else {
+                    alert(data.message || 'An error occurred');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while processing your request');
+            });
         });
     </script>
 </body>
